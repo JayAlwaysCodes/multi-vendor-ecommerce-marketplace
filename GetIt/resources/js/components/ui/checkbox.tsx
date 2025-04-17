@@ -1,8 +1,8 @@
-import * as React from "react"
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
-import { CheckIcon } from "lucide-react"
+import * as React from "react";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { CheckIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Checkbox({
   className,
@@ -12,7 +12,7 @@ function Checkbox({
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+        "peer border-[#00D4FF] data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00D4FF] data-[state=checked]:to-[#8B00FF] data-[state=checked]:border-[#8B00FF] data-[state=checked]:text-white focus-visible:border-[#8B00FF] focus-visible:ring-[#8B00FF]/50 aria-invalid:ring-[#FF6B6B]/20 aria-invalid:border-[#FF6B6B] size-4 shrink-0 rounded-[4px] border bg-[#1A1A2E] shadow-[0_0_5px_#00D4FF] transition-all duration-300 outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-[0_0_10px_#FFD700]",
         className
       )}
       {...props}
@@ -24,7 +24,7 @@ function Checkbox({
         <CheckIcon className="size-3.5" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
-  )
+  );
 }
 
-export { Checkbox }
+export { Checkbox };

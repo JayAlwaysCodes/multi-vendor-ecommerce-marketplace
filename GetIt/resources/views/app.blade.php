@@ -18,6 +18,20 @@
                 }
             })();
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+        <script>
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: '#00D4FF' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    move: { enable: true, speed: 2, direction: 'none', random: true }
+                },
+                interactivity: { detect_on: 'canvas', events: { onhover: { enable: true, mode: 'repulse' } } }
+            });
+        </script>
 
         {{-- Inline style to set the HTML background color based on our theme in app.css --}}
         <style>

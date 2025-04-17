@@ -36,13 +36,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title="Log in to your GETIT Account" description="Access your account with email or connect your wallet">
             <Head title="Log in" />
 
-            <form className="flex flex-col gap-6" onSubmit={submit}>
+            <form
+                className="flex flex-col gap-6 bg-[#2A2A40] p-8 rounded-lg max-w-md mx-auto shadow-[0_0_10px_#00D4FF,0_0_20px_#8B00FF]"
+                onSubmit={submit}
+            >
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="email" className="text-[#E5E7EB] font-['Inter']">Email Address</Label>
                         <Input
                             id="email"
                             type="email"
@@ -53,16 +56,17 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="email@example.com"
+                            className="bg-[#1A1A2E] border-[#00D4FF] text-[#E5E7EB] focus:ring-[#8B00FF] placeholder-gray-500"
                         />
-                        <InputError message={errors.email} />
+                        <InputError message={errors.email} className="text-[#FF6B6B]" />
                     </div>
 
                     <div className="grid gap-2">
                         <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password" className="text-[#E5E7EB] font-['Inter']">Password</Label>
                             {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
-                                    Forgot password?
+                                <TextLink href={route('password.request')} className="ml-auto text-sm text-[#00D4FF] hover:text-[#FFD700]" tabIndex={5}>
+                                    Forgot Password?
                                 </TextLink>
                             )}
                         </div>
@@ -75,8 +79,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Password"
+                            className="bg-[#1A1A2E] border-[#00D4FF] text-[#E5E7EB] focus:ring-[#8B00FF] placeholder-gray-500"
                         />
-                        <InputError message={errors.password} />
+                        <InputError message={errors.password} className="text-[#FF6B6B]" />
                     </div>
 
                     <div className="flex items-center space-x-3">
@@ -86,25 +91,43 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             checked={data.remember}
                             onClick={() => setData('remember', !data.remember)}
                             tabIndex={3}
+                            className="border-[#00D4FF] data-[state=checked]:bg-[#8B00FF]"
                         />
-                        <Label htmlFor="remember">Remember me</Label>
+                        <Label htmlFor="remember" className="text-[#E5E7EB] font-['Inter']">Remember Me</Label>
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log in
+                    <Button
+                        type="submit"
+                        className="mt-4 w-full bg-gradient-to-r from-[#00D4FF] to-[#8B00FF] text-white hover:from-[#8B00FF] hover:to-[#00D4FF] shadow-[0_0_10px_#00D4FF] transition-all duration-300"
+                        tabIndex={4}
+                        disabled={processing}
+                    >
+                        {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
+                        Log In
+                    </Button>
+
+                    <Button
+                        type="button"
+                        className="w-full bg-[#1A1A2E] border border-[#00D4FF] text-[#E5E7EB] hover:bg-[#3A3A50] shadow-[0_0_5px_#00D4FF] transition-all duration-300"
+                        onClick={() => alert('Web3 Wallet Connect Coming Soon!')}
+                    >
+                        Connect Wallet
                     </Button>
                 </div>
 
-                <div className="text-muted-foreground text-center text-sm">
+                <div className="text-center text-sm text-gray-400 font-['Inter']">
                     Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
+                    <TextLink href={route('register')} className="text-[#00D4FF] hover:text-[#FFD700]" tabIndex={5}>
+                        Sign Up
                     </TextLink>
                 </div>
             </form>
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div className="mb-4 text-center text-sm font-medium text-[#FFD700] font-['Inter']">
+                    {status}
+                </div>
+            )}
         </AuthLayout>
     );
 }
