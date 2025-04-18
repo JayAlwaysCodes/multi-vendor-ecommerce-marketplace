@@ -33,19 +33,21 @@ export default function DeleteUser() {
     return (
         <div className="space-y-6">
             <HeadingSmall title="Delete account" description="Delete your account and all of its resources" />
-            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-                <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
+            <div className="space-y-4 rounded-lg border border-[#FF4433]/30 bg-[#FF4433]/10 p-4">
+                <div className="relative space-y-0.5 text-[#FF4433] font-['Inter']">
                     <p className="font-medium">Warning</p>
                     <p className="text-sm">Please proceed with caution, this cannot be undone.</p>
                 </div>
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="destructive">Delete account</Button>
+                        <Button variant="destructive" className="bg-[#FF4433] text-[#E5E7EB] hover:bg-[#FF4433]/80">
+                            Delete account
+                        </Button>
                     </DialogTrigger>
-                    <DialogContent>
-                        <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
-                        <DialogDescription>
+                    <DialogContent className="bg-[#2A2A40] text-[#E5E7EB] border-[#00D4FF] shadow-[0_0_5px_#00D4FF]">
+                        <DialogTitle className="font-['Orbitron'] text-[#FFD700]">Are you sure you want to delete your account?</DialogTitle>
+                        <DialogDescription className="text-[#A1A09A]">
                             Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password
                             to confirm you would like to permanently delete your account.
                         </DialogDescription>
@@ -64,19 +66,29 @@ export default function DeleteUser() {
                                     onChange={(e) => setData('password', e.target.value)}
                                     placeholder="Password"
                                     autoComplete="current-password"
+                                    className="bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                                 />
 
-                                <InputError message={errors.password} />
+                                <InputError message={errors.password} className="text-[#FF4433]" />
                             </div>
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary" onClick={closeModal}>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={closeModal}
+                                        className="bg-[#A1A09A]/20 text-[#E5E7EB] hover:bg-[#A1A09A]/40"
+                                    >
                                         Cancel
                                     </Button>
                                 </DialogClose>
 
-                                <Button variant="destructive" disabled={processing} asChild>
+                                <Button
+                                    variant="destructive"
+                                    disabled={processing}
+                                    className="bg-[#FF4433] text-[#E5E7EB] hover:bg-[#FF4433]/80"
+                                    asChild
+                                >
                                     <button type="submit">Delete account</button>
                                 </Button>
                             </DialogFooter>
