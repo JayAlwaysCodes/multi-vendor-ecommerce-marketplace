@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 type RegisterForm = {
     name: string;
@@ -134,6 +135,12 @@ export default function Register() {
                         Log In
                     </TextLink>
                 </div>
+                {errors.email || errors.password || errors.name || errors.password_confirmation ? (
+                    <Alert variant="destructive" className="mb-6">
+                        <AlertTitle>Registration Error</AlertTitle>
+                        <AlertDescription>Please check the form for errors.</AlertDescription>
+                    </Alert>
+                ) : null}
             </form>
         </AuthLayout>
     );
