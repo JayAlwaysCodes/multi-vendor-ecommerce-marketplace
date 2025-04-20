@@ -23,6 +23,19 @@ const applyTheme = (appearance: Appearance) => {
     const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
 
     document.documentElement.classList.toggle('dark', isDark);
+
+    // Apply custom theme variables
+    if (isDark) {
+        document.documentElement.style.setProperty('--background', '#1A1A2E');
+        document.documentElement.style.setProperty('--foreground', '#E5E7EB');
+        document.documentElement.style.setProperty('--primary', '#FFD700');
+        document.documentElement.style.setProperty('--accent', '#00D4FF');
+    } else {
+        document.documentElement.style.setProperty('--background', '#E5E7EB');
+        document.documentElement.style.setProperty('--foreground', '#2A2A40');
+        document.documentElement.style.setProperty('--primary', '#FFD700');
+        document.documentElement.style.setProperty('--accent', '#00D4FF');
+    }
 };
 
 const mediaQuery = () => {
@@ -43,7 +56,6 @@ export function initializeTheme() {
 
     applyTheme(savedAppearance);
 
-    // Add the event listener for system theme changes...
     mediaQuery()?.addEventListener('change', handleSystemThemeChange);
 }
 
@@ -53,10 +65,8 @@ export function useAppearance() {
     const updateAppearance = useCallback((mode: Appearance) => {
         setAppearance(mode);
 
-        // Store in localStorage for client-side persistence...
         localStorage.setItem('appearance', mode);
 
-        // Store in cookie for SSR...
         setCookie('appearance', mode);
 
         applyTheme(mode);
