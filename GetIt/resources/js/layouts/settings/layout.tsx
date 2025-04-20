@@ -18,14 +18,13 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
-        title: 'Appearance',
-        href: '/settings/appearance',
-        icon: null,
+        // title: 'Appearance',
+        // href: '/settings/appearance',
+        // icon: null,
     },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
-    // When server-side rendering, we only render the layout on the client...
     if (typeof window === 'undefined') {
         return null;
     }
@@ -33,7 +32,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const currentPath = window.location.pathname;
 
     return (
-        <div className="px-4 py-6">
+        <div className="px-4 py-6 bg-[#1A1A2E] text-[#E5E7EB]">
             <Heading title="Settings" description="Manage your profile and account settings" />
 
             <div className="flex flex-col space-y-8 lg:flex-row lg:space-y-0 lg:space-x-12">
@@ -45,9 +44,12 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                 size="sm"
                                 variant="ghost"
                                 asChild
-                                className={cn('w-full justify-start', {
-                                    'bg-muted': currentPath === item.href,
-                                })}
+                                className={cn(
+                                    'w-full justify-start font-["Inter"] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700]',
+                                    {
+                                        'bg-[#00D4FF]/20 text-[#FFD700]': currentPath === item.href,
+                                    },
+                                )}
                             >
                                 <Link href={item.href} prefetch>
                                     {item.title}
@@ -57,7 +59,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                     </nav>
                 </aside>
 
-                <Separator className="my-6 md:hidden" />
+                <Separator className="my-6 md:hidden bg-[#00D4FF]/50" />
 
                 <div className="flex-1 md:max-w-2xl">
                     <section className="max-w-xl space-y-12">{children}</section>
