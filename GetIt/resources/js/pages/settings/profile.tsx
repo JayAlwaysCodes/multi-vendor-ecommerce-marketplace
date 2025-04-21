@@ -50,28 +50,28 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name" className="text-[#E5E7EB] font-['Inter']">Name</Label>
 
                             <Input
                                 id="name"
-                                className="mt-1 block w-full"
-                                value={data.name}
+                                className="mt-1 block w-full bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
+                                value={data斯基名}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"
                                 placeholder="Full name"
                             />
 
-                            <InputError className="mt-2" message={errors.name} />
+                            <InputError className="mt-2 text-[#FF4433]" message={errors.name} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email" className="text-[#E5E7EB] font-['Inter']">Email address</Label>
 
                             <Input
                                 id="email"
                                 type="email"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                                 value={data.email}
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
@@ -79,25 +79,25 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 placeholder="Email address"
                             />
 
-                            <InputError className="mt-2" message={errors.email} />
+                            <InputError className="mt-2 text-[#FF4433]" message={errors.email} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
-                                <p className="text-muted-foreground -mt-4 text-sm">
+                                <p className="text-[#A1A09A] -mt-4 text-sm font-['Inter']">
                                     Your email address is unverified.{' '}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
-                                        className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                                        className="text-[#FFD700] underline decoration-[#00D4FF] underline-offset-4 transition-colors duration-300 ease-out hover:decoration-[#FFD700] font-['Inter']"
                                     >
                                         Click here to resend the verification email.
                                     </Link>
                                 </p>
 
                                 {status === 'verification-link-sent' && (
-                                    <div className="mt-2 text-sm font-medium text-green-600">
+                                    <div className="mt-2 text-sm font-medium text-[#00D4FF] font-['Inter']">
                                         A new verification link has been sent to your email address.
                                     </div>
                                 )}
@@ -105,7 +105,12 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save</Button>
+                            <Button
+                                disabled={processing}
+                                className="bg-[#FFD700] text-[#2A2A40] hover:bg-[#FFD700]/80 focus:ring-[#00D4FF] font-['Inter']"
+                            >
+                                Save
+                            </Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -114,7 +119,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-[#00D4FF] font-['Inter']">Saved</p>
                             </Transition>
                         </div>
                     </form>

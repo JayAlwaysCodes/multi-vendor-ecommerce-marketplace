@@ -58,7 +58,7 @@ export default function Password() {
 
                     <form onSubmit={updatePassword} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="current_password">Current password</Label>
+                            <Label htmlFor="current_password" className="text-[#E5E7EB] font-['Inter']">Current password</Label>
 
                             <Input
                                 id="current_password"
@@ -66,16 +66,16 @@ export default function Password() {
                                 value={data.current_password}
                                 onChange={(e) => setData('current_password', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                                 autoComplete="current-password"
                                 placeholder="Current password"
                             />
 
-                            <InputError message={errors.current_password} />
+                            <InputError message={errors.current_password} className="text-[#FF4433]" />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password">New password</Label>
+                            <Label htmlFor="password" className="text-[#E5E7EB] font-['Inter']">New password</Label>
 
                             <Input
                                 id="password"
@@ -83,32 +83,37 @@ export default function Password() {
                                 value={data.password}
                                 onChange={(e) => setData('password', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                                 autoComplete="new-password"
                                 placeholder="New password"
                             />
 
-                            <InputError message={errors.password} />
+                            <InputError message={errors.password} className="text-[#FF4433]" />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password_confirmation">Confirm password</Label>
+                            <Label htmlFor="password_confirmation" className="text-[#E5E7EB] font-['Inter']">Confirm password</Label>
 
                             <Input
                                 id="password_confirmation"
                                 value={data.password_confirmation}
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                 type="password"
-                                className="mt-1 block w-full"
+                                className="mt-1 block w-full bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                                 autoComplete="new-password"
                                 placeholder="Confirm password"
                             />
 
-                            <InputError message={errors.password_confirmation} />
+                            <InputError message={errors.password_confirmation} className="text-[#FF4433]" />
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save password</Button>
+                            <Button
+                                disabled={processing}
+                                className="bg-[#FFD700] text-[#2A2A40] hover:bg-[#FFD700]/80 focus:ring-[#00D4FF] font-['Inter']"
+                            >
+                                Save password
+                            </Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -117,7 +122,7 @@ export default function Password() {
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Saved</p>
+                                <p className="text-sm text-[#00D4FF] font-['Inter']">Saved</p>
                             </Transition>
                         </div>
                     </form>
