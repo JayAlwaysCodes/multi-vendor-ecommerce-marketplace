@@ -40,7 +40,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Log in" />
 
             <form
-                className="flex flex-col gap-6 bg-[#2A2A40] p-8 rounded-lg max-w-md mx-auto shadow-[0_0_10px_#00D4FF,0_0_20px_#8B00FF]"
+                className="flex flex-col gap-6 bg-[#2A2A40] p-8 rounded-lg max-w-md mx-auto shadow-[0_0_10px_#00D4FF]"
                 onSubmit={submit}
             >
                 <div className="grid gap-6">
@@ -56,16 +56,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="email@example.com"
-                            className="bg-[#1A1A2E] border-[#00D4FF] text-[#E5E7EB] focus:ring-[#8B00FF] placeholder-gray-500"
+                            className="bg-[#1A1A2E] border-[#00D4FF] text-[#E5E7EB] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                         />
-                        <InputError message={errors.email} className="text-[#FF6B6B]" />
+                        <InputError message={errors.email} className="text-[#FF4433]" />
                     </div>
 
                     <div className="grid gap-2">
                         <div className="flex items-center">
                             <Label htmlFor="password" className="text-[#E5E7EB] font-['Inter']">Password</Label>
                             {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm text-[#00D4FF] hover:text-[#FFD700]" tabIndex={5}>
+                                <TextLink href={route('password.request')} className="ml-auto text-sm text-[#00D4FF] hover:text-[#FFD700] font-['Inter']" tabIndex={5}>
                                     Forgot Password?
                                 </TextLink>
                             )}
@@ -79,9 +79,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Password"
-                            className="bg-[#1A1A2E] border-[#00D4FF] text-[#E5E7EB] focus:ring-[#8B00FF] placeholder-gray-500"
+                            className="bg-[#1A1A2E] border-[#00D4FF] text-[#E5E7EB] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
                         />
-                        <InputError message={errors.password} className="text-[#FF6B6B]" />
+                        <InputError message={errors.password} className="text-[#FF4433]" />
                     </div>
 
                     <div className="flex items-center space-x-3">
@@ -91,33 +91,33 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             checked={data.remember}
                             onClick={() => setData('remember', !data.remember)}
                             tabIndex={3}
-                            className="border-[#00D4FF] data-[state=checked]:bg-[#8B00FF]"
+                            className="border-[#00D4FF] data-[state=checked]:bg-[#00D4FF] data-[state=checked]:text-[#2A2A40]"
                         />
                         <Label htmlFor="remember" className="text-[#E5E7EB] font-['Inter']">Remember Me</Label>
                     </div>
 
                     <Button
                         type="submit"
-                        className="mt-4 w-full bg-gradient-to-r from-[#00D4FF] to-[#8B00FF] text-white hover:from-[#8B00FF] hover:to-[#00D4FF] shadow-[0_0_10px_#00D4FF] transition-all duration-300"
+                        className="mt-4 w-full bg-[#FFD700] text-[#2A2A40] hover:bg-[#FFD700]/80 focus:ring-[#00D4FF] font-['Inter']"
                         tabIndex={4}
                         disabled={processing}
                     >
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
+                        {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2 text-[#2A2A40]" />}
                         Log In
                     </Button>
 
                     <Button
                         type="button"
-                        className="w-full bg-[#1A1A2E] border border-[#00D4FF] text-[#E5E7EB] hover:bg-[#3A3A50] shadow-[0_0_5px_#00D4FF] transition-all duration-300"
+                        className="w-full bg-[#1A1A2E] border border-[#00D4FF] text-[#E5E7EB] hover:bg-[#3A3A50] shadow-[0_0_5px_#00D4FF] transition-all duration-300 font-['Inter']"
                         onClick={() => alert('Web3 Wallet Connect Coming Soon!')}
                     >
                         Connect Wallet
                     </Button>
                 </div>
 
-                <div className="text-center text-sm text-gray-400 font-['Inter']">
+                <div className="text-center text-sm text-[#A1A09A] font-['Inter']">
                     Don't have an account?{' '}
-                    <TextLink href={route('register')} className="text-[#00D4FF] hover:text-[#FFD700]" tabIndex={5}>
+                    <TextLink href={route('register')} className="text-[#FFD700] hover:text-[#FFD700]/80" tabIndex={5}>
                         Sign Up
                     </TextLink>
                 </div>
