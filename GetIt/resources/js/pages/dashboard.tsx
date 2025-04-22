@@ -40,7 +40,7 @@ export default function Dashboard() {
             <Head title="Dashboard" />
             <div className="relative flex min-h-screen flex-col bg-[#1A1A2E] p-6 text-[#E5E7EB] overflow-hidden">
                 <div className="particle-bg absolute inset-0 z-0"></div>
-                <header className="w-full max-w-[335px] lg:max-w-4xl mx-auto text-sm z-10 flex items-center justify-between">
+                <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-4 px-6 rounded-md">
                     {/* GETIT Logo */}
                     <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium font-['Inter'] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
                         <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md bg-[#00D4FF] shadow-[0_0_5px_#00D4FF]">
