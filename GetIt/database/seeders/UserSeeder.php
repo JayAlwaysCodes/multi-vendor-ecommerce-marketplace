@@ -2,8 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
 
 class UserSeeder extends Seeder
 {
@@ -21,7 +27,7 @@ class UserSeeder extends Seeder
             'name' => 'Vendor',
             'email' => 'vendor@example.com'
         ])->assignRole(RolesEnum::Vendor->value);
-        
+
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@example.com'
