@@ -25,6 +25,7 @@ class ProductImages extends EditRecord
                     ->collection('images')
                     ->reorderable()
                     ->enableReordering()
+                    ->disk('public')
                     ->columnSpan(2)
             ]);
     }
