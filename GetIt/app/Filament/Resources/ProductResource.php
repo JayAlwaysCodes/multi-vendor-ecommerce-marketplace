@@ -25,6 +25,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\ProductResource\Pages\EditProduct;
 use App\Filament\Resources\ProductResource\Pages\ProductImages;
+use App\Filament\Resources\ProductResource\Pages\ProductVariationTypes;
 
 class ProductResource extends Resource
 {
@@ -157,6 +158,7 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
             'images' => Pages\ProductImages::route('/{record}/images'),
+            'variation-types' => Pages\ProductVariationTypes::route('/{record}/variation-types'),
         ];
     }
 
@@ -164,6 +166,7 @@ class ProductResource extends Resource
         return $page->generateNavigationItems([
             EditProduct::class,
             ProductImages::class,
+            ProductVariationTypes::class,
         ]);
         
     }
