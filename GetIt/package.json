@@ -57,9 +57,11 @@
         "lucide-react": "^0.475.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "react-tsparticles": "^2.12.2",
         "tailwind-merge": "^3.0.1",
         "tailwindcss": "^4.0.0",
         "tailwindcss-animate": "^1.0.7",
+        "tsparticles": "^3.8.1",
         "typescript": "^5.7.2",
         "vite": "^6.0"
     },

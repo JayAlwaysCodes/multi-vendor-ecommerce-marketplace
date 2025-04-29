@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Log;
 use App\Models\Category; 
 use App\Models\Department;
 use App\Models\VariationType;
@@ -33,6 +34,7 @@ class Product extends Model implements HasMedia
     }
 
     public function scopePublished(Builder $query):Builder{
+        Log::info('Applying published scope', ['status' => $query->toSql()]);
         return $query->where('status', ProductStatusEnum::Published);
     }
 

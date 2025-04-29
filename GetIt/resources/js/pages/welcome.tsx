@@ -1,4 +1,4 @@
-import { type SharedData } from '@/types';
+import { type SharedData, PaginationProps, Product } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -6,14 +6,76 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
+import ProductItem from '@/components/ProductItem';
+import Particles from 'react-tsparticles';
+import { loadFull } from 'tsparticles';
 
 export default function Welcome() {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, products } = usePage<SharedData & { products: PaginationProps<Product> }>().props;
 
-    // State for wallet connection
+    // Detailed logging for debugging
+    console.log('Products prop:', products);
+    console.log('Products exists:', !!products);
+    console.log('Products.data exists:', !!products?.data);
+    console.log('Products.data length:', products?.data?.length);
+
+    // State for wallet connection and dropdowns
     const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
+
+    // Particles initialization
+    const particlesInit = async (main) => {
+        await loadFull(main);
+    };
+
+    // Particles options
+    const particlesOptions = {
+        particles: {
+            number: {
+                value: 80,
+                density: {
+                    enable: true,
+                    value_area: 800,
+                },
+            },
+            color: {
+                value: ['#FFD700', '#00D4FF'],
+            },
+            shape: {
+                type: 'circle',
+            },
+            opacity: {
+                value: 0.5,
+            },
+            size: {
+                value: { min: 1, max: 5 },
+            },
+            move: {
+                enable: true,
+                speed: 2,
+                direction: 'none',
+                random: false,
+                straight: false,
+                out_mode: 'out',
+            },
+        },
+        interactivity: {
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'repulse',
+                },
+            },
+            modes: {
+                repulse: {
+                    distance: 100,
+                    duration: 0.4,
+                },
+            },
+        },
+        retina_detect: true,
+    };
 
     // Toggle dropdown visibility
     const toggleProfileDropdown = () => {
@@ -35,6 +97,13 @@ export default function Welcome() {
         router.post(route('logout'));
     };
 
+    // Handle pagination
+    const handlePageChange = (url: string | null) => {
+        if (url) {
+            router.get(url, {}, { preserveState: true, preserveScroll: true });
+        }
+    };
+
     return (
         <>
             <Head title="Welcome to GETIT">
@@ -42,7 +111,14 @@ export default function Welcome() {
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@400;500;600&display=swap" rel="stylesheet" />
             </Head>
             <div className="relative flex min-h-screen flex-col bg-[#1A1A2E] p-6 text-[#E5E7EB] overflow-hidden">
-                <div className="particle-bg absolute inset-0 z-0"></div>
+                {/* Particle Background */}
+                <Particles
+                    id="tsparticles"
+                    init={particlesInit}
+                    options={particlesOptions}
+                    className="absolute inset-0 z-0"
+                />
+
                 <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-4 px-6 rounded-md">
                     {/* GETIT Logo */}
                     <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium font-['Inter'] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
@@ -91,7 +167,7 @@ export default function Welcome() {
                                 <div className="relative">
                                     <button onClick={toggleProfileDropdown} className="flex items-center gap-2">
                                         <Avatar className="h-8 w-8 overflow-hidden rounded-full">
-                                            <AvatarImage src="/path-to-user-image.jpg" alt="User Avatar" />
+                                            <AvatarImage src={auth.user.avatar || ''} alt="User Avatar" />
                                             <AvatarFallback className="rounded-lg bg-[#A1A09A]/20 text-[#E5E7EB] font-['Inter']">
                                                 {auth.user.name?.[0]?.toUpperCase() || 'G'}
                                             </AvatarFallback>
@@ -161,6 +237,44 @@ export default function Welcome() {
                         )}
                     </nav>
                 </header>
+
+                {/* Main Content */}
+                <main className="w-full max-w-7xl mx-auto mt-8 z-10">
+                    <h1 className="text-3xl font-['Orbitron'] text-[#FFD700] mb-6">Featured Products</h1>
+                    {products && products.data && products.data.length > 0 ? (
+                        <>
+                            {/* Product Grid */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {products.data.map((product) => (
+                                    <ProductItem key={product.id} product={product} />
+                                ))}
+                            </div>
+
+                            {/* Pagination */}
+                            <div className="flex justify-center gap-2 mt-8">
+                                <Button
+                                    onClick={() => handlePageChange(products.prev_page_url)}
+                                    disabled={!products.prev_page_url}
+                                    className="px-4 py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700] disabled:opacity-50"
+                                >
+                                    Previous
+                                </Button>
+                                <span className="px-4 py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter']">
+                                    Page {products.current_page} of {products.last_page}
+                                </span>
+                                <Button
+                                    onClick={() => handlePageChange(products.next_page_url)}
+                                    disabled={!products.next_page_url}
+                                    className="px-4 py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700] disabled:opacity-50"
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        </>
+                    ) : (
+                        <p className="text-[#E5E7EB] font-['Inter']">No products available.</p>
+                    )}
+                </main>
             </div>
         </>
     );

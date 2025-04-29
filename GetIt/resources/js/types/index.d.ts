@@ -39,7 +39,7 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown;
 }
 
 export type Product = {
@@ -57,8 +57,34 @@ export type Product = {
         id: number;
         name: string;
     };
+    description?: string;
+    images?: Array<{
+        id: number;
+        url: string;
+        thumb: string;
+    }>;
+    variation_types?: Array<{
+        id: number;
+        name: string;
+        options: Array<{
+            id: number;
+            name: string;
+        }>;
+    }>;
+    variations?: Array<{
+        id: number;
+        variation_type_option_ids: number[];
+        quantity: number;
+        price: number;
+    }>;
 }
 
 export type PaginationProps<T> = {
     data: Array<T>;
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    next_page_url: string | null;
+    prev_page_url: string | null;
 }
