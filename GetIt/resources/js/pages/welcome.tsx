@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import ProductItem from '@/components/ProductItem';
-import Particles from 'react-tsparticles';
-import { loadFull } from 'tsparticles';
 
 export default function Welcome() {
-    const { auth, products } = usePage<SharedData & { products: PaginationProps<Product> }>().props;
+    const props = usePage<SharedData & { products: PaginationProps<Product> }>().props;
+    console.log('All props received:', props);
+
+    const { auth, products } = props;
 
     // Detailed logging for debugging
     console.log('Products prop:', products);
@@ -23,59 +24,6 @@ export default function Welcome() {
     const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
-
-    // Particles initialization
-    const particlesInit = async (main) => {
-        await loadFull(main);
-    };
-
-    // Particles options
-    const particlesOptions = {
-        particles: {
-            number: {
-                value: 80,
-                density: {
-                    enable: true,
-                    value_area: 800,
-                },
-            },
-            color: {
-                value: ['#FFD700', '#00D4FF'],
-            },
-            shape: {
-                type: 'circle',
-            },
-            opacity: {
-                value: 0.5,
-            },
-            size: {
-                value: { min: 1, max: 5 },
-            },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: 'none',
-                random: false,
-                straight: false,
-                out_mode: 'out',
-            },
-        },
-        interactivity: {
-            events: {
-                onhover: {
-                    enable: true,
-                    mode: 'repulse',
-                },
-            },
-            modes: {
-                repulse: {
-                    distance: 100,
-                    duration: 0.4,
-                },
-            },
-        },
-        retina_detect: true,
-    };
 
     // Toggle dropdown visibility
     const toggleProfileDropdown = () => {
@@ -110,31 +58,23 @@ export default function Welcome() {
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@400;500;600&display=swap" rel="stylesheet" />
             </Head>
-            <div className="relative flex min-h-screen flex-col bg-[#1A1A2E] p-6 text-[#E5E7EB] overflow-hidden">
-                {/* Particle Background */}
-                <Particles
-                    id="tsparticles"
-                    init={particlesInit}
-                    options={particlesOptions}
-                    className="absolute inset-0 z-0"
-                />
-
-                <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-4 px-6 rounded-md">
+            <div className="relative flex min-h-screen flex-col bg-[#1A1A2E] p-4 sm:p-6 text-[#E5E7EB] overflow-hidden">
+                <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-3 sm:py-4 px-4 sm:px-6 rounded-md">
                     {/* GETIT Logo */}
                     <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium font-['Inter'] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
                         <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md bg-[#00D4FF] shadow-[0_0_5px_#00D4FF]">
                             <AppLogoIcon className="size-9 fill-[#FFD700]" />
                         </div>
-                        <span className="text-[#FFD700] font-['Orbitron'] text-lg">GETIT</span>
+                        <span className="text-[#FFD700] font-['Orbitron'] text-base sm:text-lg">GETIT</span>
                     </Link>
 
                     {/* Header Navigation */}
-                    <nav className="flex items-center justify-end gap-4">
+                    <nav className="flex items-center justify-end gap-3 sm:gap-4">
                         {/* Cart Button with Dropdown */}
                         <div className="relative">
                             <button
                                 onClick={toggleCartDropdown}
-                                className="relative inline-block rounded-sm border border-[#00D4FF] px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
+                                className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                             >
                                 <ShoppingCart className="h-5 w-5" />
                                 {/* Dummy Cart Item Count Badge */}
@@ -172,7 +112,7 @@ export default function Welcome() {
                                                 {auth.user.name?.[0]?.toUpperCase() || 'G'}
                                             </AvatarFallback>
                                         </Avatar>
-                                        <span className="font-['Inter'] text-[#FFD700]">
+                                        <span className="font-['Inter'] text-[#FFD700] text-sm sm:text-base">
                                             {auth.user.name || 'User'}
                                         </span>
                                     </button>
@@ -204,7 +144,7 @@ export default function Welcome() {
                                 {/* Wallet Connect/Connected Button */}
                                 <Button
                                     onClick={isWalletConnected ? undefined : handleWalletConnect}
-                                    className={`inline-block rounded-sm px-5 py-1.5 text-sm font-['Inter'] transition-all duration-300 ${
+                                    className={`inline-block rounded-sm px-4 sm:px-5 py-1.5 text-sm font-['Inter'] transition-all duration-300 ${
                                         isWalletConnected
                                             ? 'bg-[#00D4FF]/20 text-[#00D4FF] cursor-default'
                                             : 'border border-[#00D4FF] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700]'
@@ -217,19 +157,19 @@ export default function Welcome() {
                             <>
                                 <Link
                                     href={route('login')}
-                                    className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:border-[#00D4FF] hover:text-[#00D4FF] hover:shadow-[0_0_5px_#00D4FF] transition-all duration-300"
+                                    className="inline-block rounded-sm border border-transparent px-4 sm:px-5 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:border-[#00D4FF] hover:text-[#00D4FF] hover:shadow-[0_0_5px_#00D4FF] transition-all duration-300"
                                 >
                                     Log in
                                 </Link>
                                 <Link
                                     href={route('register')}
-                                    className="inline-block rounded-sm border border-[#00D4FF] px-5 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
+                                    className="inline-block rounded-sm border border-[#00D4FF] px-4 sm:px-5 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                                 >
                                     Register
                                 </Link>
                                 <Button
                                     onClick={handleWalletConnect}
-                                    className="inline-block rounded-sm border border-[#00D4FF] px-5 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
+                                    className="inline-block rounded-sm border border-[#00D4FF] px-4 sm:px-5 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                                 >
                                     Connect Wallet
                                 </Button>
@@ -239,8 +179,8 @@ export default function Welcome() {
                 </header>
 
                 {/* Main Content */}
-                <main className="w-full max-w-7xl mx-auto mt-8 z-10">
-                    <h1 className="text-3xl font-['Orbitron'] text-[#FFD700] mb-6">Featured Products</h1>
+                <main className="w-full max-w-7xl mx-auto mt-20 sm:mt-24 z-10">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-['Orbitron'] text-[#FFD700] mb-6">Featured Products</h1>
                     {products && products.data && products.data.length > 0 ? (
                         <>
                             {/* Product Grid */}
