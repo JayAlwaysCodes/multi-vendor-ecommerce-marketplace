@@ -2,6 +2,7 @@ import React from 'react';
 import { Product } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
+import CurrencyFormatter from './CurrencyFormatter';
 
 function ProductItem({ product }: { product: Product }) {
     return (
@@ -37,7 +38,9 @@ function ProductItem({ product }: { product: Product }) {
                     >
                         Add to Cart
                     </Button>
-                    <span className="text-xl font-['Inter'] text-[#FFD700]">${product.price}</span>
+                    <span className="text-xl font-['Inter'] text-[#FFD700]">
+                        <CurrencyFormatter amount={product.price}  />
+                    </span>
                 </div>
             </div>
         </div>

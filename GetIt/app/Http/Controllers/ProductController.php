@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductListResource;
 
 
-class ProductController extends Controller
+class ProductController extends Controller 
 {
     public function welcome()
     {
