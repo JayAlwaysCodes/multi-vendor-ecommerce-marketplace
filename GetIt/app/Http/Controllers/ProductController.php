@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductListResource;
 
 
@@ -36,10 +37,14 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['user', 'department', 'media', 'variationTypes.options', 'variations']);
+
+
+        $productResource = new ProductResource($product);
+        
 
         return Inertia::render('Product/Show', [
-            'product' => new ProductListResource($product),
+            'product' => $productResource,
+            'variationOptions' => request('options', [])
         ]);
     }
 }

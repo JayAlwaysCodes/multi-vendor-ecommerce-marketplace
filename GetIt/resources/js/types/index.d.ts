@@ -42,6 +42,27 @@ export interface User {
     [key: string]: unknown;
 }
 
+export type Image = {
+    id: number;
+    thumb:string;
+    small:string;
+    large:string;
+}
+
+export type VariationTypeOption = {
+    id: number;
+    name: string;
+    images: Image[];
+    type: VariationType;
+}
+
+export type VariationType = {
+    id: number;
+    name: string;
+    type: 'select' | 'radio' | 'image';
+    options: VariationTypeOption[]
+}
+
 export type Product = {
     id: number;
     title: string;
@@ -49,6 +70,8 @@ export type Product = {
     price: number;
     quantity: number;
     image: string;
+    images: Image[];
+    short_description: string;
     user: {
         id: number;
         name: string;
@@ -63,20 +86,27 @@ export type Product = {
         url: string;
         thumb: string;
     }>;
-    variation_types?: Array<{
-        id: number;
-        name: string;
-        options: Array<{
-            id: number;
-            name: string;
-        }>;
-    }>;
-    variations?: Array<{
+    variationTypes: VariationType[],
+    variations: Array<{
         id: number;
         variation_type_option_ids: number[];
         quantity: number;
         price: number;
-    }>;
+    }>
+    // variation_types?: Array<{
+    //     id: number;
+    //     name: string;
+    //     options: Array<{
+    //         id: number;
+    //         name: string;
+    //     }>;
+    // }>;
+    // variations?: Array<{
+    //     id: number;
+    //     variation_type_option_ids: number[];
+    //     quantity: number;
+    //     price: number;
+    // }>;
 }
 
 export type PaginationProps<T> = {
