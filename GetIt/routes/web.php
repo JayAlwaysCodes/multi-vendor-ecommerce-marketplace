@@ -9,6 +9,10 @@ Route::get('/', [ProductController::class, 'welcome'])->name('home');
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])
     ->name('product.show');
 
+Route::post('/cart/strore/{product}', function(){
+
+})->name('cart.store');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard',[ProductController::class, 'welcome'])->name('dashboard');
 });
