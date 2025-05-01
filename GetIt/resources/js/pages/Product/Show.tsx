@@ -1,4 +1,3 @@
-import Carousel from '@/components/Carousel';
 import CurrencyFormatter from '@/components/CurrencyFormatter';
 import { arraysAreEqual } from '@/helpers';
 import { type SharedData, Product, VariationTypeOption, Image } from '@/types';
@@ -68,9 +67,10 @@ export default function Show() {
                 };
             }
         }
+        console.log('No variation matched, falling back to product defaults');
         return {
             price: productData?.price ?? 0,
-            quantity: productData?.quantity ?? 0
+            quantity: productData?.quantity ?? 1
         };
     }, [productData, selectedOptions]);
 
@@ -185,6 +185,9 @@ export default function Show() {
     };
 
     const renderAddToCartButton = () => {
+        // Ensure computedProduct.quantity is a number and at least 1 for the dropdown
+        const availableQuantity = Math.max(1, Math.min(10, computedProduct.quantity || 1));
+
         return (
             <div className="mb-8 flex gap-4">
                 <select
@@ -192,9 +195,7 @@ export default function Show() {
                     onChange={onQuantityChange}
                     className="select select-bordered w-full bg-[#25253A] text-[#E5E7EB] border-[#00D4FF]"
                 >
-                    {Array.from({
-                        length: Math.min(10, computedProduct.quantity)
-                    }).map((_, i) => (
+                    {Array.from({ length: availableQuantity }).map((_, i) => (
                         <option value={i + 1} key={i + 1}>Quantity: {i + 1}</option>
                     ))}
                 </select>
@@ -286,12 +287,12 @@ export default function Show() {
                                     <span>Only {computedProduct.quantity} left</span>
                                 </div>
                             )}
-                            {computedProduct.quantity < 0 ? renderAddToCartButton() : (
+                            {computedProduct.quantity > 0 ? renderAddToCartButton() : (
                                 <div className="text-red-500 my-4">
                                     <span>Out of stock</span>
                                 </div>
                             )}
-                            {renderAddToCartButton()}
+                            {/* {renderAddToCartButton()} */}
 
                             <b className="text-xl text-[#FFD700] font-['Orbitron']">About the Item</b>
                             <div className="wysiwyg-output text-[#E5E7EB]" dangerouslySetInnerHTML={{ __html: productData.description || 'No description available.' }} />
