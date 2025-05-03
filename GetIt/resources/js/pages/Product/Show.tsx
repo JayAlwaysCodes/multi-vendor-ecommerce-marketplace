@@ -170,19 +170,15 @@ export default function Show() {
                         </div>
                     }
                     {type.type.toLowerCase() === 'radio' && 
-                        <div className="flex join mb-4">
+                        <div className="flex gap-2 mb-4">
                             {type.options.map(option => (
-                                <label key={option.id} className="join-item">
-                                    <input
-                                        onChange={() => chooseOption(type.id, option)}
-                                        className="btn bg-[#25253A] text-[#E5E7EB] border-[#00D4FF] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
-                                        type="radio"
-                                        value={option.id}
-                                        checked={selectedOptions[type.id]?.id === option.id}
-                                        name={`variation_type_${type.id}`}
-                                    />
-                                    <span className="ml-2">{option.name}</span>
-                                </label>
+                                <button
+                                    key={option.id}
+                                    onClick={() => chooseOption(type.id, option)}
+                                    className={`btn ${selectedOptions[type.id]?.id === option.id ? 'bg-[#00D4FF] text-[#1A1A2E]' : 'bg-[#25253A] text-[#E5E7EB]'} border-[#00D4FF] hover:bg-[#FFD700]/20 hover:text-[#FFD700] transition-all duration-300`}
+                                >
+                                    {option.name}
+                                </button>
                             ))}
                         </div>
                     }
