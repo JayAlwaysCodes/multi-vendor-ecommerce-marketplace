@@ -16,11 +16,14 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        \Log::info('Raw variationTypes before mapping:', ['variationTypes' => $this->variationTypes]);
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
             'description' => $this->description,
+            'short_description' => $this->short_description ?? substr(strip_tags($this->description), 0, 100) . '...',
             'price' => $this->price,
             'quantity' => $this->quantity,
             'image' => $this->getFirstMediaUrl('images'),
@@ -32,11 +35,11 @@ class ProductResource extends JsonResource
                     'large' => $image->getUrl('large'),
                 ];
             }),
-            'user' => $this->relationLoaded('user', fn () => [
+            'user' => $this->whenLoaded('user', fn () => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
             ], ['id' => null, 'name' => 'Unknown Vendor']),
-            'department' => $this->relationLoaded('department', fn () => [
+            'department' => $this->whenLoaded('department', fn () => [
                 'id' => $this->department->id,
                 'name' => $this->department->name,
             ], ['id' => null, 'name' => 'Unknown Department']),
@@ -45,7 +48,7 @@ class ProductResource extends JsonResource
                     'id' => $variationType->id,
                     'name' => $variationType->name,
                     'type' => $variationType->type,
-                    'options' => $variationType->relationLoaded('options', fn () => $variationType->options->map(function ($option) {
+                    'options' => $variationType->relationLoaded('options') ? $variationType->options->map(function ($option) {
                         return [
                             'id' => $option->id,
                             'name' => $option->name,
@@ -58,10 +61,10 @@ class ProductResource extends JsonResource
                                 ];
                             }),
                         ];
-                    }), []),
+                    }) : [],
                 ];
             }), []),
-            'variations' => $this->relationLoaded('variations', fn () => $this->variations->map(function ($variation) {
+            'variations' => $this->whenLoaded('variations', fn () => $this->variations->map(function ($variation) {
                 return [
                     'id' => $variation->id,
                     'variation_type_option_ids' => $variation->variation_type_option_ids,

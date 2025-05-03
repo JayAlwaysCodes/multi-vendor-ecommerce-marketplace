@@ -55,19 +55,19 @@ export default function Show() {
         console.log('Computing computedProduct, selectedOptions:', selectedOptions);
         const selectedOptionIds = Object.values(selectedOptions).map(op => op.id).sort();
 
-        // Ensure productData.variations is an array before iterating
         const variations = Array.isArray(productData?.variations) ? productData.variations : [];
         for (let variation of variations) {
             const optionIds = variation.variation_type_option_ids.sort();
 
             if (arraysAreEqual(selectedOptionIds, optionIds)) {
+                console.log('Matched variation with price:', variation.price);
                 return {
                     price: variation.price,
                     quantity: variation.quantity === null ? Number.MAX_VALUE : variation.quantity,
                 };
             }
         }
-        console.log('No variation matched, falling back to product defaults');
+        console.log('No variation matched, falling back to product defaults with price:', productData?.price);
         return {
             price: productData?.price ?? 0,
             quantity: productData?.quantity ?? 1
@@ -148,34 +148,41 @@ export default function Show() {
             productData.variationTypes.map((type, i) => (
                 <div key={type.id}>
                     <b>{type.name}</b>
-                    {type.type === 'image' && 
+                    {type.type.toLowerCase() === 'image' && 
                         <div className="flex gap-2 mb-4">
                             {type.options.map(option => (
                                 <div onClick={() => chooseOption(type.id, option)} key={option.id}>
-                                    {option.images && option.images.length > 0 && (
+                                    {option.images && option.images.length > 0 ? (
                                         <img
                                             src={option.images[0].thumb}
                                             alt={option.name}
                                             className={`w-[50px] ${selectedOptions[type.id]?.id === option.id ? 'outline outline-4 outline-[#00D4FF]' : ''}`}
                                         />
+                                    ) : (
+                                        <div
+                                            className={`w-[50px] h-[50px] bg-[#25253A] flex items-center justify-center text-[#E5E7EB] text-sm ${selectedOptions[type.id]?.id === option.id ? 'outline outline-4 outline-[#00D4FF]' : ''}`}
+                                        >
+                                            {option.name}
+                                        </div>
                                     )}
                                 </div>
                             ))}
                         </div>
                     }
-                    {type.type === 'radio' && 
+                    {type.type.toLowerCase() === 'radio' && 
                         <div className="flex join mb-4">
                             {type.options.map(option => (
-                                <input
-                                    onChange={() => chooseOption(type.id, option)}
-                                    key={option.id}
-                                    className="join-item btn bg-[#25253A] text-[#E5E7EB] border-[#00D4FF] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
-                                    type="radio"
-                                    value={option.id}
-                                    checked={selectedOptions[type.id]?.id === option.id}
-                                    name={`variation_type_${type.id}`}
-                                    aria-label={option.name}
-                                />
+                                <label key={option.id} className="join-item">
+                                    <input
+                                        onChange={() => chooseOption(type.id, option)}
+                                        className="btn bg-[#25253A] text-[#E5E7EB] border-[#00D4FF] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
+                                        type="radio"
+                                        value={option.id}
+                                        checked={selectedOptions[type.id]?.id === option.id}
+                                        name={`variation_type_${type.id}`}
+                                    />
+                                    <span className="ml-2">{option.name}</span>
+                                </label>
                             ))}
                         </div>
                     }
@@ -185,7 +192,6 @@ export default function Show() {
     };
 
     const renderAddToCartButton = () => {
-        // Ensure computedProduct.quantity is a number and at least 1 for the dropdown
         const availableQuantity = Math.max(1, Math.min(10, computedProduct.quantity || 1));
 
         return (
@@ -282,7 +288,7 @@ export default function Show() {
                             </div>
                             {productData.variationTypes && productData.variationTypes.length > 0 && renderProductVariationTypes()}
 
-                            {computedProduct.quantity !== undefined && computedProduct.quantity < 10 && computedProduct.quantity > 0 &&(
+                            {computedProduct.quantity !== undefined && computedProduct.quantity < 10 && computedProduct.quantity > 0 && (
                                 <div className="text-red-500 my-4">
                                     <span>Only {computedProduct.quantity} left</span>
                                 </div>
@@ -292,7 +298,6 @@ export default function Show() {
                                     <span>Out of stock</span>
                                 </div>
                             )}
-                            {/* {renderAddToCartButton()} */}
 
                             <b className="text-xl text-[#FFD700] font-['Orbitron']">About the Item</b>
                             <div className="wysiwyg-output text-[#E5E7EB]" dangerouslySetInnerHTML={{ __html: productData.description || 'No description available.' }} />
