@@ -1,8 +1,12 @@
 import CurrencyFormatter from '@/components/CurrencyFormatter';
 import { arraysAreEqual } from '@/helpers';
 import { type SharedData, Product, VariationTypeOption, Image } from '@/types';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function Show() {
     const props = usePage<SharedData & { product: { product: Product }; variationOptions: number[] }>().props;
@@ -10,7 +14,7 @@ export default function Show() {
 
     // Extract the inner product from the wrapped object
     const productData = props.product.product;
-    const { variationOptions } = props;
+    const { variationOptions, auth } = props;
 
     // Log product and variationOptions for debugging
     console.log('Product data:', productData);
@@ -33,6 +37,9 @@ export default function Show() {
     const { url } = usePage();
     
     const [selectedOptions, setSelectedOptions] = useState<Record<number, VariationTypeOption>>([]);
+    const [isWalletConnected, setIsWalletConnected] = useState(false);
+    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+    const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
 
     const images = useMemo(() => {
         console.log('Computing images, selectedOptions:', selectedOptions);
@@ -173,8 +180,8 @@ export default function Show() {
                         <div className="flex gap-2 mb-4">
                             {type.options.map(option => (
                                 <button
-                                    key={option.id}
                                     onClick={() => chooseOption(type.id, option)}
+                                    key={option.id}
                                     className={`btn ${selectedOptions[type.id]?.id === option.id ? 'bg-[#00D4FF] text-[#1A1A2E]' : 'bg-[#25253A] text-[#E5E7EB]'} border-[#00D4FF] hover:bg-[#FFD700]/20 hover:text-[#FFD700] transition-all duration-300`}
                                 >
                                     {option.name}
@@ -211,6 +218,23 @@ export default function Show() {
         );
     };
 
+    const toggleProfileDropdown = () => {
+        setIsProfileDropdownOpen((prev) => !prev);
+    };
+
+    const toggleCartDropdown = () => {
+        setIsCartDropdownOpen((prev) => !prev);
+    };
+
+    const handleWalletConnect = () => {
+        setIsWalletConnected(true);
+        alert('Web3 Wallet Connected!');
+    };
+
+    const handleLogout = () => {
+        router.post(route('logout'));
+    };
+
     useEffect(() => {
         const idsMap = Object.fromEntries(
             Object.entries(selectedOptions).map(([typeId, option]: [string, VariationTypeOption]) => [typeId, option.id])
@@ -229,14 +253,111 @@ export default function Show() {
 
     return (
         <>
-            <Head title={productData.title || 'Product Details'} />
-            <div className="flex min-h-screen flex-col bg-[#1A1A2E] text-[#E5E7EB] font-['Inter'] p-4 sm:p-6">
+            <Head title={productData.title || 'Product Details'}>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@400;500;600&display=swap" rel="stylesheet" />
+            </Head>
+            <div className="relative flex min-h-screen flex-col bg-[#1A1A2E] p-4 sm:p-6 text-[#E5E7EB] overflow-hidden">
                 {/* Static Background Effect */}
                 <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#1A1A2E] to-[#2A2A40] opacity-80">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(0,212,255,0.1)_0%,_transparent_70%)]"></div>
                 </div>
 
-                <main className="w-full max-w-7xl mx-auto mt-8 sm:mt-12 z-10">
+                <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-3 sm:py-4 px-4 sm:px-6 rounded-md">
+                    {/* GETIT Logo */}
+                    <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium font-['Inter'] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
+                        <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md bg-[#00D4FF] shadow-[0_0_5px_#00D4FF]">
+                            <AppLogoIcon className="size-9 fill-[#FFD700]" />
+                        </div>
+                        <span className="text-[#FFD700] font-['Orbitron'] text-base sm:text-lg">GETIT</span>
+                    </Link>
+
+                    {/* Header Navigation */}
+                    <nav className="flex items-center justify-end gap-3 sm:gap-4">
+                        {/* Cart Button with Dropdown */}
+                        <div className="relative">
+                            <button
+                                onClick={toggleCartDropdown}
+                                className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
+                            >
+                                <ShoppingCart className="h-5 w-5" />
+                                {/* Dummy Cart Item Count Badge */}
+                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#00D4FF] text-xs font-['Inter'] text-[#FFD700] shadow-[0_0_5px_#00D4FF]">
+                                    2
+                                </span>
+                            </button>
+
+                            {isCartDropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
+                                    <Link
+                                        href="/cart/checkout"
+                                        className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
+                                    >
+                                        Checkout
+                                    </Link>
+                                    <Link
+                                        href="/cart/edit"
+                                        className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
+                                    >
+                                        Edit Cart
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Profile Avatar with Dropdown */}
+                        <div className="relative">
+                            <button onClick={toggleProfileDropdown} className="flex items-center gap-2">
+                                <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                                    <AvatarImage src={auth.user.avatar || ''} alt="User Avatar" />
+                                    <AvatarFallback className="rounded-lg bg-[#A1A09A]/20 text-[#E5E7EB] font-['Inter']">
+                                        {auth.user.name?.[0]?.toUpperCase() || 'G'}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <span className="font-['Inter'] text-[#FFD700] text-sm sm:text-base">
+                                    {auth.user.name || 'User'}
+                                </span>
+                            </button>
+
+                            {isProfileDropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
+                                    <Link
+                                        href="/profile"
+                                        className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
+                                    >
+                                        Profile
+                                    </Link>
+                                    <Link
+                                        href="/settings/profile"
+                                        className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
+                                    >
+                                        Settings
+                                    </Link>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="block w-full text-left px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Wallet Connect/Connected Button */}
+                        <Button
+                            onClick={isWalletConnected ? undefined : handleWalletConnect}
+                            className={`inline-block rounded-sm px-4 sm:px-5 py-1.5 text-sm font-['Inter'] transition-all duration-300 ${
+                                isWalletConnected
+                                    ? 'bg-[#00D4FF]/20 text-[#00D4FF] cursor-default'
+                                    : 'border border-[#00D4FF] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700]'
+                            }`}
+                        >
+                            {isWalletConnected ? 'Connected' : 'Connect Wallet'}
+                        </Button>
+                    </nav>
+                </header>
+
+                <main className="w-full max-w-7xl mx-auto mt-20 sm:mt-24 z-10">
                     <div className="grid gap-8 grid-cols-1 lg:grid-cols-12">
                         <div className="col-span-7">
                             {/* Large Image Display */}
