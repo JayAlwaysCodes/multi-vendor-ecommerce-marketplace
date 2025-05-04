@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Product;
+
 class CartService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+   public function addItemToCart( Product $product, int $quantity = 1,  $optionIds = null){
+
+   }
 }

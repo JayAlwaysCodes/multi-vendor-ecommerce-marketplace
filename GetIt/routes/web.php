@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 
 Route::get('/', [ProductController::class, 'welcome'])->name('home');
@@ -9,9 +10,14 @@ Route::get('/', [ProductController::class, 'welcome'])->name('home');
 Route::get('/product/{product:slug}', [ProductController::class, 'show'])
     ->name('product.show');
 
-Route::post('/cart/strore/{product}', function(){
+Route::controller(CartController::class)->group(function (){
+    Route::get('/cart', 'index')->name('cart.index');
+    Route::post('/cart/add/{product}','store' )->name('cart.store');
+    Route::put('/cart/{product}', 'update')->name('cart.update');
+    Route::delete('/cart/{product}', 'destroy')->name('cart.destroy');
+})
 
-})->name('cart.store');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard',[ProductController::class, 'welcome'])->name('dashboard');
