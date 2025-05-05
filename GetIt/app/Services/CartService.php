@@ -37,8 +37,12 @@ class CartService
                $cartItems = $this->getCartItemsFromCookies();
             }
 
+            $productIds = collect($cartItems)->map(fn($item) => $item['product_id']);
+            $products = Product::whereIn('id', $productIds)->with('user.vendor');
+
          }
-      }each (\Exception $e) {
+         return $this->cachedCartItems;
+      }catch (\Exception $e) {
          // Handle the exception
         
       }
