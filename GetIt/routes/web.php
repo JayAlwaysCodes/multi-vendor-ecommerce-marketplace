@@ -15,7 +15,7 @@ Route::controller(CartController::class)->group(function (){
     Route::post('/cart/add/{product}','store' )->name('cart.store');
     Route::put('/cart/{product}', 'update')->name('cart.update');
     Route::delete('/cart/{product}', 'destroy')->name('cart.destroy');
-})
+});
 
 
 
