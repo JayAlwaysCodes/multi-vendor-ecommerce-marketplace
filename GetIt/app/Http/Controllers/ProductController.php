@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function welcome()
     {
         $products = Product::query()
-            ->published()
+            ->forWebsite()
             ->with(['user', 'department', 'media'])
             ->paginate(10);
 
