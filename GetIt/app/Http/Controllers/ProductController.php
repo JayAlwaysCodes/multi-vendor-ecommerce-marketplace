@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Log;
 use Inertia\Inertia;
 use App\Models\Product;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
@@ -31,6 +32,7 @@ class ProductController extends Controller
 
         return Inertia::render('welcome', [
             'products' => $productsResource,
+            'cartTotal' => app(CartService::class)->getTotalQuantity(),
         ]);
     }
 
@@ -40,7 +42,7 @@ class ProductController extends Controller
             'user',
             'department',
             'media',
-            'variationTypes.options.media', // Load variation type options and their media
+            'variationTypes.options.media',
             'variations'
         ]);
 
@@ -53,9 +55,15 @@ class ProductController extends Controller
             'product_resource' => $productResource->toArray(request()),
         ]);
 
+        $variationOptions = request()->input('options', []);
+        if (!is_array($variationOptions)) {
+            $variationOptions = [];
+        }
+
         return Inertia::render('Product/Show', [
             'product' => $productResource,
-            'variationOptions' => request('options', [])
+            'variationOptions' => $variationOptions,
+            'cartTotal' => app(CartService::class)->getTotalQuantity(),
         ]);
     }
 }

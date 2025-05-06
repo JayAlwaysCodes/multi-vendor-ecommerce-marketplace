@@ -46,12 +46,12 @@ class ProductResource extends JsonResource
             'variationTypes' => $this->whenLoaded('variationTypes', fn () => $this->variationTypes->map(function ($variationType) {
                 return [
                     'id' => $variationType->id,
-                    'name' => $variationType->name,
-                    'type' => $variationType->type,
+                    'name' => $this->when($variationType->name, fn () => $variationType->name, 'Unnamed Type'),
+                    'type' => $this->when($variationType->type, fn () => $variationType->type, 'text'),
                     'options' => $variationType->relationLoaded('options') ? $variationType->options->map(function ($option) {
                         return [
                             'id' => $option->id,
-                            'name' => $option->name,
+                            'name' => $this->when($option->name, fn () => $option->name, 'Unnamed Option'),
                             'images' => $option->getMedia('images')->map(function ($image) {
                                 return [
                                     'id' => $image->id,
@@ -59,19 +59,22 @@ class ProductResource extends JsonResource
                                     'small' => $image->getUrl('small'),
                                     'large' => $image->getUrl('large'),
                                 ];
-                            }),
+                            })->toArray(),
                         ];
-                    }) : [],
+                    })->toArray() : [],
                 ];
-            }), []),
+            })->toArray(), []),
             'variations' => $this->whenLoaded('variations', fn () => $this->variations->map(function ($variation) {
+                $optionIds = is_string($variation->variation_type_option_ids)
+                    ? json_decode($variation->variation_type_option_ids, true) ?? []
+                    : (array) $variation->variation_type_option_ids;
                 return [
                     'id' => $variation->id,
-                    'variation_type_option_ids' => $variation->variation_type_option_ids,
+                    'variation_type_option_ids' => $optionIds,
                     'quantity' => $variation->quantity,
                     'price' => $variation->price,
                 ];
-            }), [])
+            })->toArray(), [])
         ];
     }
 }
