@@ -4,7 +4,12 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\CartItem;
+use Illuminate\Support\Str;
+use App\Models\VariationType;
+use Illuminate\Support\Facades\DB;
+use App\Models\VariationTypeOption;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class CartService
 {
@@ -15,17 +20,37 @@ class CartService
    protected const COOKIE_LIFETIME = 60 * 24 * 365;
 
    public function addItemToCart( Product $product, int $quantity = 1,  $optionIds = null){
+      if ($optionIds === null){
+         $optionIds = $product->variationTypes->mapWithKeys(fn (VariationType $type) =>[$type->id => $type->options[0]?->id])->toArray();
+      }
 
+      $price = $product->getPriceForOptions($optionIds);
+
+      if (Auth::check()){
+         $this->saveItemToDatabase($product->id, $quantity, $price, $optionIds);
+      }else{
+         $this->saveItemToCookies($product->id, $quantity, $price, $optionIds);
+      }
    }
 
    public function updateItemQuantity(int $productId, int $quantity, $optionIds = null)
    {
        // Logic to update the item quantity in the cart
+       if (Auth::check()){
+         $this->updateItemQuantityInDatabase($productId, $quantity, $optionIds);
+       }else{
+         $this->updateItemQuantityInCookies($productId, $quantity, $optionIds);
+       }
    }
 
    public function removeItemFromCart(int $productId, $optionIds = null)
    {
       // Logic to remove the item from the cart
+      if (Auth::check()){
+         $this->removeItemFromDatabase($productId, $optionIds);
+      }else{
+         $this->removeItemFromCookies($productId, $optionIds);
+      }
    }
 
    public function getCartItems(): array
@@ -44,7 +69,7 @@ class CartService
 
             $cartItemData = [];
             foreach ($cartItems as $key => $cartItem){
-               $product = data_get($products, $cartItem['product_id']);
+               $product = data_get($products, $cartItem['product_id']); 
                if (!$product) continue;
 
                $optionsInfo = [];
@@ -140,11 +165,117 @@ class CartService
       $cartItems = $this->getCartItemsFromCookies();
 
       ksort($optionIds);
+
+      //using a unique key based on product id and option ids
+
+      $itemKey = $productId . '_' . json_encode($optionIds);
+
+      if (isset($cartItems[$itemKey])) {
+         $cartItems[$itemKey]['quantity'] = $quantity;
+      }
+
+      //save updated cart items back to cookie
+      Cookie::queue(self::COOKIE_NAME, json_encode($cartItems), self::COOKIE_LIFETIME);
    }
 
    protected function saveItemToDatabase(int $productId, int $quantity, $price, array $optionIds): void
    {
       // Logic to save the item to the database
+      $userId = Auth::id();
+      ksort($optionIds);
+
+      $cartItem = CartItem::where('user_id', $userId)->where('product_id', $productId)->where('variation_type_option_ids', json_encode($optionIds))->first();
+
+      if ($cartItem){
+         $cartItem->update([
+            'quantity' => DB::raw('quantity + ' . $quantity),
+         ]);
+      }else{
+         CartItem::create([
+            'user_id' => $userId,
+            'product_id' => $productId,
+            'quantity' => $quantity,
+            'price' => $price,
+            'variation_type_option_ids' => $optionIds,
+         ]);
+      }
+   }
+
+   protected function saveItemToCookies(int $productId, int $quantity, $price, array $optionIds): void
+   {
+      // Logic to save the item to the cookies
+      $cartItems = $this->getCartItemsFromCookies();
+      ksort($optionIds);
+
+      //using a unique key based on product id and option ids
+      $itemKey = $productId . '_' . json_encode($optionIds);
+
+      if (isset($cartItems[$itemKey])){
+         $cartItems[$itemKey]['quantity'] += quantity;
+         $cartItems[$itemKey]['price'] = $price;
+      }else{
+         $cartItems[$itemKey] = [
+            'id' => Str::uuid(),
+            'product_id' => $productId,
+            'quantity' => $quantity,
+            'price' => $price,
+            'option_ids' => $optionIds,
+         ];
+      }
+
+      //save updated cart items back to cookie
+      Cookie::queue(self::COOKIE_NAME, json_encode($cartItems), self::COOKIE_LIFETIME);
+   }
+
+   protected function removeItemFromDatabase(int $productId, array $optionIds): void
+   {
+      $userId = Auth::id();
+      ksort($optionIds);
+
+      CartItem::where('user_id', $userId)->where('product_id', $productId)->where('variation_type_option_ids', json_encode($optionIds))->delete();
+
+   }
+
+   protected function removeItemFromCookies(int $productId, array $optionIds): void
+   {
+      // Logic to remove the item from the cookies
+      $cartItems = $this->getCartItemsFromCookies();
+
+      ksort($optionIds);
+
+      //define the cart key
+      $cartkey = $productId . '_' . json_encode($optionIds);
+
+      //remove the item from the cart
+      unset($cartItems[$cartkey]);
+
+      Cookie::queue(self::COOKIE_NAME, json_encode($cartItems), self::COOKIE_LIFETIME);
+    
+   }
+
+   protected function getCartItemsFromDatabase()
+   {
+      $userId = Auth::id();
+
+      $cartItems = CartItem::where('user_id', $userId)->get()
+         ->map(function ($cartItem){
+            return [
+               'id' => $cartItem->id,
+               'product_id' => $cartItem->product_id,
+               'quantity' => $cartItem->quantity,
+               'price' => $cartItem->price,
+               'option_ids' => $cartItem->variation_type_option_ids,
+            ];
+         })->toArray();
+
+      return $cartItems;
+   }
+
+   protected function getCartItemsFromCookies()
+   {
+      $cartItems = json_decode(Cookie::get(self::COOKIE_NAME, '[]'), true);
+
+      return $cartItems;
    }
 
 }
