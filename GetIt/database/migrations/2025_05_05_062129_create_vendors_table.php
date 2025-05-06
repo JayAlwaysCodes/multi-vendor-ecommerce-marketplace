@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vendors', function (Blueprint $table) {
-            $table->bigInteger('user_id')->unsigned()-primary();
+            $table->bigInteger('user_id')->unsigned()->primary();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('status');
             $table->string('store_name');

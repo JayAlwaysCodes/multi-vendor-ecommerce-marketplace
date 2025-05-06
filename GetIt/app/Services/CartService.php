@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\CartItem;
+use Illuminate\Support\Facades\Auth;
 
 class CartService
 {
@@ -91,6 +93,8 @@ class CartService
          return $this->cachedCartItems;
       }catch (\Exception $e) {
          // Handle the exception
+         Log::error($e->getMessage() . PHP_EOL . $e->getTraceAsString());
+         return [];
         
       }
    }
@@ -98,25 +102,49 @@ class CartService
    public function getTotalQuantity(): int
    {
       // Logic to get the total quantity of items in the cart
+      $totalQuantity = 0;
+      foreach ($this->getCartItems() as $item) {
+         $totalQuantity += $item['quantity'];
+      }
+      return $totalQuantity;
    }
 
    public function getTotalPrice(): float
    {
       // Logic to get the total price of items in the cart
+      $total = 0;
+
+      foreach ($this->getCartItems() as $item) {
+         $total += $item['price'] * $item['quantity'];
+      }
+      return $total;
    }
 
    protected function updateItemQuantityInDatabase(int $productId, int $quantity, array $optionIds): void
    {
       // Logic to update the item quantity in the database
+      $userId = Auth::id();
+
+      $cartItem = CartItem::where('user_id', $userId)->where('product_id', $productId)->where('variation_type_option_ids', json_encode($optionIds))->first();
+
+      if ($cartItem){
+         $cartItem->update([
+            'quantity' => $quantity,
+         ]);
+      }
    }
 
    protected function updateItemQuantityInCookies(int $productId, int $quantity, array $optionIds): void
    {
       // Logic to update the item quantity in the cookies
+      $cartItems = $this->getCartItemsFromCookies();
+
+      ksort($optionIds);
    }
 
-   protected function saveItemToDatabase(int $productId, int $quantity,) {
-
+   protected function saveItemToDatabase(int $productId, int $quantity, $price, array $optionIds): void
+   {
+      // Logic to save the item to the database
    }
 
 }
