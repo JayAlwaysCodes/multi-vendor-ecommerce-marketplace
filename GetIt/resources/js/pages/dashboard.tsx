@@ -20,10 +20,12 @@ export default function Dashboard() {
     console.log('Products.data exists:', !!products?.data);
     console.log('Products.data length:', products?.data?.length);
 
-    // State for wallet connection and dropdowns
+    // State for wallet connection, dropdowns, and toast
     const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
 
     // Toggle dropdown visibility
     const toggleProfileDropdown = () => {
@@ -82,7 +84,6 @@ export default function Dashboard() {
                                 className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                             >
                                 <ShoppingCart className="h-5 w-5" />
-                                {/* Dynamic Cart Item Count Badge */}
                                 {cartTotal > 0 && (
                                     <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#00D4FF] text-xs font-['Inter'] text-[#FFD700] shadow-[0_0_5px_#00D4FF]">
                                         {cartTotal}
@@ -168,7 +169,7 @@ export default function Dashboard() {
                             {/* Product Grid */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {products.data.map((product) => (
-                                    <ProductItem key={product.id} product={product} />
+                                    <ProductItem key={product.id} product={product} setToast={setToastMessage} setShowToast={setShowToast} />
                                 ))}
                             </div>
 
@@ -197,6 +198,16 @@ export default function Dashboard() {
                         <p className="text-[#E5E7EB] font-['Inter']">No products available.</p>
                     )}
                 </main>
+
+                {/* Fancy Toast Notification */}
+                {showToast && (
+                    <div className="fixed bottom-5 right-5 z-50 animate-slide-in-out">
+                        <div className="bg-[#25253A] border border-[#00D4FF] text-[#E5E7EB] px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 transform transition-all duration-300 hover:shadow-2xl hover:scale-105">
+                            <span className="text-sm font-['Inter']">{toastMessage}</span>
+                            <span className="text-[#00D4FF] animate-pulse">●</span>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

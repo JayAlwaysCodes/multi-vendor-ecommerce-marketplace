@@ -1,10 +1,48 @@
 import React from 'react';
 import { Product } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import CurrencyFormatter from './CurrencyFormatter';
 
-function ProductItem({ product }: { product: Product }) {
+interface ProductItemProps {
+    product: Product;
+    setToast: (message: string) => void;
+    setShowToast: (show: boolean) => void;
+}
+
+function ProductItem({ product, setToast, setShowToast }: ProductItemProps) {
+    const form = useForm({
+        quantity: 1,
+        price: product.price || 0,
+        option_ids: [], // Default to empty array
+    });
+
+    const addToCart = () => {
+        if (!product.id) {
+            setToast('Product ID is missing!');
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+            return;
+        }
+        form.post(route('cart.store', product.id), {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                setToast('Item added to cart successfully!');
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 3000);
+                // Refresh the page to update cartTotal
+                window.location.reload();
+            },
+            onError: (err) => {
+                setToast('Failed to add item to cart!');
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 3000);
+                console.log('Add to cart error:', err);
+            },
+        });
+    };
+
     return (
         <div className="bg-[#25253A] rounded-md shadow-[0_0_10px_#00D4FF] overflow-hidden transition-all duration-300 hover:shadow-[0_0_15px_#FFD700]">
             {/* Product Image */}
@@ -34,12 +72,13 @@ function ProductItem({ product }: { product: Product }) {
                 <div className="flex items-center justify-between mt-3">
                     <Button
                         className="bg-[#00D4FF] text-[#1A1A2E] font-['Inter'] hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300"
-                        onClick={() => alert('Added to cart!')} // Placeholder for cart functionality
+                        onClick={addToCart}
+                        disabled={!product.id}
                     >
                         Add to Cart
                     </Button>
                     <span className="text-xl font-['Inter'] text-[#FFD700]">
-                        <CurrencyFormatter amount={product.price}  />
+                        <CurrencyFormatter amount={product.price} />
                     </span>
                 </div>
             </div>
