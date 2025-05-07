@@ -9,10 +9,10 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import ProductItem from '@/components/ProductItem';
 
 export default function Welcome() {
-    const props = usePage<SharedData & { products: PaginationProps<Product> }>().props;
+    const props = usePage<SharedData & { products: PaginationProps<Product>; cartTotal?: number }>().props;
     console.log('All props received:', props);
 
-    const { auth, products } = props;
+    const { auth, products, cartTotal = 0 } = props;
 
     // Detailed logging for debugging
     console.log('Products prop:', products);
@@ -77,10 +77,12 @@ export default function Welcome() {
                                 className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                             >
                                 <ShoppingCart className="h-5 w-5" />
-                                {/* Dummy Cart Item Count Badge */}
-                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#00D4FF] text-xs font-['Inter'] text-[#FFD700] shadow-[0_0_5px_#00D4FF]">
-                                    2
-                                </span>
+                                {/* Dynamic Cart Item Count Badge */}
+                                {cartTotal > 0 && (
+                                    <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#00D4FF] text-xs font-['Inter'] text-[#FFD700] shadow-[0_0_5px_#00D4FF]">
+                                        {cartTotal}
+                                    </span>
+                                )}
                             </button>
 
                             {isCartDropdownOpen && (
