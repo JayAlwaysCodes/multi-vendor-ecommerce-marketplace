@@ -7,12 +7,13 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import ProductItem from '@/components/ProductItem';
+import CurrencyFormatter from '@/components/CurrencyFormatter';
 
 export default function Dashboard() {
-    const props = usePage<SharedData & { products: PaginationProps<Product>; cartTotal?: number }>().props;
+    const props = usePage<SharedData & { products: PaginationProps<Product>; cartTotal?: number; cartTotalPrice?: number }>().props;
     console.log('All props received:', props);
 
-    const { auth, products, cartTotal = 0 } = props;
+    const { auth, products, cartTotal = 0, cartTotalPrice = 0 } = props;
 
     // Detailed logging for debugging
     console.log('Products prop:', products);
@@ -92,6 +93,9 @@ export default function Dashboard() {
 
                             {isCartDropdownVisible && (
                                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
+                                    <div className="px-4 py-2">
+                                        <div className="text-sm text-[#E5E7EB] font-['Inter']">Total: <CurrencyFormatter amount={cartTotalPrice} /></div>
+                                    </div>
                                     <Link
                                         href="/cart/checkout"
                                         className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"

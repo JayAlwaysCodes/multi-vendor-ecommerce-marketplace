@@ -9,15 +9,15 @@ import { ShoppingCart } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function Show() {
-    const props = usePage<SharedData & { product: { product: Product }; variationOptions: number[]; cartTotal?: number }>().props;
+    const props = usePage<SharedData & { product: { product: Product }; variationOptions: number[]; cartTotal?: number; cartTotalPrice?: number }>().props;
     console.log('All props received in Show:', props);
 
     // Extract the inner product from the wrapped object with fallback
     const productData = props.product?.product || null;
     console.log('Extracted productData:', productData);
 
-    const { variationOptions = [], auth, cartTotal = 0 } = props || {};
-    console.log('Variation options:', variationOptions, 'Auth:', auth, 'Cart Total:', cartTotal);
+    const { variationOptions = [], auth, cartTotal = 0, cartTotalPrice = 0 } = props || {};
+    console.log('Variation options:', variationOptions, 'Auth:', auth, 'Cart Total:', cartTotal, 'Cart Total Price:', cartTotalPrice);
 
     // Log product and variationOptions for debugging
     console.log('Product data exists:', !!productData);
@@ -40,7 +40,7 @@ export default function Show() {
     const [selectedOptions, setSelectedOptions] = useState<Record<number, VariationTypeOption>>({});
     const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-    const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
+    const [isCartDropdownVisible, setIsCartDropdownVisible] = useState(false); // Changed to hover
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
 
@@ -270,10 +270,6 @@ export default function Show() {
         setIsProfileDropdownOpen((prev) => !prev);
     };
 
-    const toggleCartDropdown = () => {
-        setIsCartDropdownOpen((prev) => !prev);
-    };
-
     const handleWalletConnect = () => {
         setIsWalletConnected(true);
         alert('Web3 Wallet Connected!');
@@ -323,10 +319,12 @@ export default function Show() {
                     {/* Header Navigation */}
                     <nav className="flex items-center justify-end gap-3 sm:gap-4">
                         {/* Cart Button with Dropdown */}
-                        <div className="relative" onMouseEnter={() => setIsCartDropdownOpen(true)}
-                            onMouseLeave={() => setIsCartDropdownOpen(false)}>
+                        <div
+                            className="relative"
+                            onMouseEnter={() => setIsCartDropdownVisible(true)}
+                            onMouseLeave={() => setIsCartDropdownVisible(false)}
+                        >
                             <button
-                                // onClick={toggleCartDropdown}
                                 className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                             >
                                 <ShoppingCart className="h-5 w-5" />
@@ -338,8 +336,11 @@ export default function Show() {
                                 )}
                             </button>
 
-                            {isCartDropdownOpen && (
+                            {isCartDropdownVisible && (
                                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
+                                    <div className="px-4 py-2">
+                                        <div className="text-sm text-[#E5E7EB] font-['Inter']">Total: <CurrencyFormatter amount={cartTotalPrice} /></div>
+                                    </div>
                                     <Link
                                         href="/cart/checkout"
                                         className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
