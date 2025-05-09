@@ -69,4 +69,12 @@ class CartController extends Controller
         $cartService->removeItemFromCart($product->id, $optionIds);
         return back()->with('success', 'Product removed from cart');
     }
+
+    public function clear(Request $request)
+    {
+        $cartService = app(CartService::class);
+        $cartService->clearCart();
+
+        return redirect()->back()->with('success', 'Cart cleared successfully!');
+    }
 }

@@ -29,6 +29,9 @@ export interface SharedData {
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
     [key: string]: unknown;
+    totalQuantity: number;
+    totalPrice: number;
+    cartItems: CartItem[];
 }
 
 export interface User {
@@ -93,20 +96,19 @@ export type Product = {
         quantity: number;
         price: number;
     }>
-    // variation_types?: Array<{
-    //     id: number;
-    //     name: string;
-    //     options: Array<{
-    //         id: number;
-    //         name: string;
-    //     }>;
-    // }>;
-    // variations?: Array<{
-    //     id: number;
-    //     variation_type_option_ids: number[];
-    //     quantity: number;
-    //     price: number;
-    // }>;
+
+}
+
+export type CartItem = {
+    id: number;
+    product_id: number;
+    title: string;
+    slug: string;
+    price: number;
+    quantity: number;
+    image: string;
+    option_ids: Record<string, number>;
+    options: VariationTypeOption[];
 }
 
 export type PaginationProps<T> = {

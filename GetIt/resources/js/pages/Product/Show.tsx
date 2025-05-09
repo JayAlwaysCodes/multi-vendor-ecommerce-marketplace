@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
+import MiniCartDropdown from '@/components/MiniCartDropdown';
 
 export default function Show() {
     const props = usePage<SharedData & { product: { product: Product }; variationOptions: number[]; cartTotal?: number; cartTotalPrice?: number }>().props;
@@ -249,7 +250,7 @@ export default function Show() {
                 <select
                     value={form.data.quantity}
                     onChange={onQuantityChange}
-                    className="select select-bordered w-full bg-[#25253A] text-[#E5E7EB] border-[#00D4FF]"
+                    className="select select-bordered w-full bg-[#25253A] text-[#E5E7EB] border-[#00D4FF] max-w-xs"
                 >
                     {Array.from({ length: availableQuantity }).map((_, i) => (
                         <option value={i + 1} key={i + 1}>Quantity: {i + 1}</option>
@@ -307,7 +308,7 @@ export default function Show() {
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(0,212,255,0.1)_0%,_transparent_70%)]"></div>
                 </div>
 
-                <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-3 sm:py-4 px-4 sm:px-6 rounded-md">
+                <header className="w-full max-w-7xl mx-auto text-sm z-20 flex items-center justify-between bg-[#25253A] py-3 sm:py-4 px-4 sm:px-6 rounded-md">
                     {/* GETIT Logo */}
                     <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium font-['Inter'] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
                         <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md bg-[#00D4FF] shadow-[0_0_5px_#00D4FF]">
@@ -318,44 +319,12 @@ export default function Show() {
 
                     {/* Header Navigation */}
                     <nav className="flex items-center justify-end gap-3 sm:gap-4">
-                        {/* Cart Button with Dropdown */}
-                        <div
-                            className="relative"
+                        {/* Cart Button with Dropdown using MiniCartDropdown */}
+                        <MiniCartDropdown
+                            isVisible={isCartDropdownVisible}
                             onMouseEnter={() => setIsCartDropdownVisible(true)}
                             onMouseLeave={() => setIsCartDropdownVisible(false)}
-                        >
-                            <button
-                                className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
-                            >
-                                <ShoppingCart className="h-5 w-5" />
-                                {/* Dynamic Cart Item Count Badge */}
-                                {cartTotal > 0 && (
-                                    <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#00D4FF] text-xs font-['Inter'] text-[#FFD700] shadow-[0_0_5px_#00D4FF]">
-                                        {cartTotal}
-                                    </span>
-                                )}
-                            </button>
-
-                            {isCartDropdownVisible && (
-                                <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
-                                    <div className="px-4 py-2">
-                                        <div className="text-sm text-[#E5E7EB] font-['Inter']">Total: <CurrencyFormatter amount={cartTotalPrice} /></div>
-                                    </div>
-                                    <Link
-                                        href="/cart/checkout"
-                                        className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
-                                    >
-                                        Checkout
-                                    </Link>
-                                    <Link
-                                        href="/cart/edit"
-                                        className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
-                                    >
-                                        Edit Cart
-                                    </Link>
-                                </div>
-                            )}
-                        </div>
+                        />
 
                         {/* Profile Avatar with Dropdown */}
                         <div className="relative">
@@ -372,7 +341,7 @@ export default function Show() {
                             </button>
 
                             {isProfileDropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
+                                <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-30">
                                     <Link
                                         href="/profile"
                                         className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
@@ -409,12 +378,12 @@ export default function Show() {
                     </nav>
                 </header>
 
-                <main className="w-full max-w-7xl mx-auto mt-20 sm:mt-24 z-10">
-                    <div className="grid gap-8 grid-cols-1 lg:grid-cols-12">
+                <main className="w-full max-w-7xl mx-auto mt-6 sm:mt-8 z-10">
+                    <div className="grid gap-6 grid-cols-1 lg:grid-cols-12">
                         <div className="col-span-7">
                             {/* Large Image Display */}
                             {selectedImage ? (
-                                <div className="w-full h-96 bg-[#25253A] rounded-md flex items-center justify-center mb-4">
+                                <div className="w-full h-64 sm:h-96 bg-[#25253A] rounded-md flex items-center justify-center mb-4">
                                     <img
                                         src={selectedImage.large || '/placeholder-image.png'}
                                         alt="Selected product image"
@@ -422,19 +391,19 @@ export default function Show() {
                                     />
                                 </div>
                             ) : (
-                                <div className="w-full h-96 bg-[#25253A] rounded-md flex items-center justify-center mb-4">
+                                <div className="w-full h-64 sm:h-96 bg-[#25253A] rounded-md flex items-center justify-center mb-4">
                                     <p className="text-[#E5E7EB] font-['Inter']">No images available</p>
                                 </div>
                             )}
 
                             {/* Thumbnails */}
                             {images.length > 0 && (
-                                <div className="flex gap-4 justify-center">
+                                <div className="flex gap-2 sm:gap-4 justify-center overflow-x-auto">
                                     {images.slice(0, 3).map((image) => (
                                         <div
                                             key={image.id}
                                             onClick={() => setSelectedImage(image)}
-                                            className={`w-24 h-24 bg-[#25253A] rounded-md flex items-center justify-center cursor-pointer ${
+                                            className={`w-16 sm:w-24 h-16 sm:h-24 bg-[#25253A] rounded-md flex items-center justify-center cursor-pointer ${
                                                 selectedImage?.id === image.id ? 'outline outline-4 outline-[#00D4FF]' : ''
                                             }`}
                                         >
@@ -449,35 +418,35 @@ export default function Show() {
                             )}
                         </div>
                         <div className="col-span-5">
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-['Orbitron'] text-[#FFD700] mb-8">{productData.title || 'Untitled Product'}</h1>
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-['Orbitron'] text-[#FFD700] mb-4">{productData.title || 'Untitled Product'}</h1>
                             <div>
-                                <div className="text-3xl font-semibold text-[#E5E7EB]">
+                                <div className="text-2xl sm:text-3xl font-semibold text-[#E5E7EB]">
                                     <CurrencyFormatter amount={computedProduct.price || 0} />
                                 </div>
                             </div>
                             {productData.variationTypes && productData.variationTypes.length > 0 && renderProductVariationTypes()}
 
                             {computedProduct.quantity !== undefined && computedProduct.quantity < 10 && computedProduct.quantity > 0 && (
-                                <div className="text-red-500 my-4">
+                                <div className="text-red-500 my-2">
                                     <span>Only {computedProduct.quantity} left</span>
                                 </div>
                             )}
                             {computedProduct.quantity > 0 ? renderAddToCartButton() : (
-                                <div className="text-red-500 my-4">
+                                <div className="text-red-500 my-2">
                                     <span>Out of stock</span>
                                 </div>
                             )}
 
-                            <b className="text-xl text-[#FFD700] font-['Orbitron']">About the Item</b>
-                            <div className="wysiwyg-output text-[#E5E7EB]" dangerouslySetInnerHTML={{ __html: productData.description || 'No description available.' }} />
+                            <b className="text-lg sm:text-xl text-[#FFD700] font-['Orbitron'] mt-4">About the Item</b>
+                            <div className="wysiwyg-output text-[#E5E7EB] mt-2" dangerouslySetInnerHTML={{ __html: productData.description || 'No description available.' }} />
                         </div>
                     </div>
                 </main>
 
                 {/* Fancy Toast Notification */}
                 {showToast && (
-                    <div className="fixed bottom-5 right-5 z-50 animate-slide-in-out">
-                        <div className="bg-[#25253A] border border-[#00D4FF] text-[#E5E7EB] px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 transform transition-all duration-300 hover:shadow-2xl hover:scale-105">
+                    <div className="fixed bottom-5 right-5 z-40 animate-slide-in-out">
+                        <div className="bg-[#25253A] border border-[#00D4FF] text-[#E5E7EB] px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg flex items-center space-x-2 sm:space-x-3 transform transition-all duration-300 hover:shadow-2xl hover:scale-105">
                             <span className="text-sm font-['Inter']">{toastMessage}</span>
                             <span className="text-[#00D4FF] animate-pulse">●</span>
                         </div>
