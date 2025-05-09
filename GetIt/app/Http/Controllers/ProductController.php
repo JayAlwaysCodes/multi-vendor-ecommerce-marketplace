@@ -30,9 +30,38 @@ class ProductController extends Controller
             'products_resource' => $productsResource->toArray(request()),
         ]);
 
+        $cartService = app(CartService::class);
         return Inertia::render('welcome', [
             'products' => $productsResource,
-            'cartTotal' => app(CartService::class)->getTotalQuantity(),
+            'cartTotal' => $cartService->getTotalQuantity(),
+            'cartItems' => $cartService->getCartItems(),
+            'cartTotalPrice' => $cartService->getTotalPrice(),
+        ]);
+    }
+
+    public function dashboard()
+    {
+        $products = Product::query()
+            ->forWebsite()
+            ->with(['user', 'department', 'media'])
+            ->paginate(10);
+
+        Log::info('Products fetched for dashboard page', [
+            'products' => $products->toArray(),
+            'product_count' => $products->total(),
+        ]);
+
+        $productsResource = ProductListResource::collection($products);
+        Log::info('Products resource for dashboard page', [
+            'products_resource' => $productsResource->toArray(request()),
+        ]);
+
+        $cartService = app(CartService::class);
+        return Inertia::render('Dashboard', [
+            'products' => $productsResource,
+            'cartTotal' => $cartService->getTotalQuantity(),
+            'cartItems' => $cartService->getCartItems(),
+            'cartTotalPrice' => $cartService->getTotalPrice(),
         ]);
     }
 
@@ -60,10 +89,13 @@ class ProductController extends Controller
             $variationOptions = [];
         }
 
+        $cartService = app(CartService::class);
         return Inertia::render('Product/Show', [
             'product' => $productResource,
             'variationOptions' => $variationOptions,
-            'cartTotal' => app(CartService::class)->getTotalQuantity(),
+            'cartTotal' => $cartService->getTotalQuantity(),
+            'cartItems' => $cartService->getCartItems(),
+            'cartTotalPrice' => $cartService->getTotalPrice(),
         ]);
     }
 }

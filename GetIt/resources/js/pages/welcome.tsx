@@ -23,17 +23,13 @@ export default function Welcome() {
     // State for wallet connection, dropdowns, and toast
     const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-    const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
+    const [isCartDropdownVisible, setIsCartDropdownVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
 
-    // Toggle dropdown visibility
+    // Toggle dropdown visibility for profile
     const toggleProfileDropdown = () => {
         setIsProfileDropdownOpen((prev) => !prev);
-    };
-
-    const toggleCartDropdown = () => {
-        setIsCartDropdownOpen((prev) => !prev);
     };
 
     // Handle wallet connection
@@ -73,9 +69,12 @@ export default function Welcome() {
                     {/* Header Navigation */}
                     <nav className="flex items-center justify-end gap-3 sm:gap-4">
                         {/* Cart Button with Dropdown */}
-                        <div className="relative">
+                        <div
+                            className="relative"
+                            onMouseEnter={() => setIsCartDropdownVisible(true)}
+                            onMouseLeave={() => setIsCartDropdownVisible(false)}
+                        >
                             <button
-                                onClick={toggleCartDropdown}
                                 className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                             >
                                 <ShoppingCart className="h-5 w-5" />
@@ -86,7 +85,7 @@ export default function Welcome() {
                                 )}
                             </button>
 
-                            {isCartDropdownOpen && (
+                            {isCartDropdownVisible && (
                                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
                                     <Link
                                         href="/cart/checkout"

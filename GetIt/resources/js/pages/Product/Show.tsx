@@ -323,9 +323,10 @@ export default function Show() {
                     {/* Header Navigation */}
                     <nav className="flex items-center justify-end gap-3 sm:gap-4">
                         {/* Cart Button with Dropdown */}
-                        <div className="relative">
+                        <div className="relative" onMouseEnter={() => setIsCartDropdownOpen(true)}
+                            onMouseLeave={() => setIsCartDropdownOpen(false)}>
                             <button
-                                onClick={toggleCartDropdown}
+                                // onClick={toggleCartDropdown}
                                 className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300"
                             >
                                 <ShoppingCart className="h-5 w-5" />

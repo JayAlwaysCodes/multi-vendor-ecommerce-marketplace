@@ -134,6 +134,17 @@ class CartService
       return $total;
    }
 
+   public function clearCart(): void
+   {
+      if (Auth::check()) {
+         $userId = Auth::id();
+         CartItem::where('user_id', $userId)->delete();
+      } else {
+         Cookie::queue(self::COOKIE_NAME, json_encode([]), self::COOKIE_LIFETIME);
+      }
+      $this->cachedCartItems = null;
+   }
+
    protected function updateItemQuantityInDatabase(int $productId, int $quantity, array $optionIds): void
    {
       $userId = Auth::id();
