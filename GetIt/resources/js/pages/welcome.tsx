@@ -59,7 +59,7 @@ export default function Welcome() {
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@400;500;600&display=swap" rel="stylesheet" />
             </Head>
             <div className="relative flex min-h-screen flex-col bg-[#1A1A2E] p-4 sm:p-6 text-[#E5E7EB] overflow-hidden">
-                <header className="w-full max-w-7xl mx-auto text-sm z-10 flex items-center justify-between bg-[#25253A] py-3 sm:py-4 px-4 sm:px-6 rounded-md">
+                <header className="w-full max-w-7xl mx-auto text-sm z-20 flex items-center justify-between bg-[#25253A] py-3 sm:py-4 px-4 sm:px-6 rounded-md">
                     {/* GETIT Logo */}
                     <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium font-['Inter'] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
                         <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md bg-[#00D4FF] shadow-[0_0_5px_#00D4FF]">
@@ -70,7 +70,6 @@ export default function Welcome() {
 
                     {/* Header Navigation */}
                     <nav className="flex items-center justify-end gap-3 sm:gap-4">
-                        {/* Cart Button with Dropdown */}
                         {/* Cart Button with Dropdown using MiniCartDropdown */}
                         <MiniCartDropdown
                             isVisible={isCartDropdownVisible}
@@ -95,7 +94,7 @@ export default function Welcome() {
                                     </button>
 
                                     {isProfileDropdownOpen && (
-                                        <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-20">
+                                        <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-30">
                                             <Link
                                                 href="/profile"
                                                 className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
@@ -156,33 +155,33 @@ export default function Welcome() {
                 </header>
 
                 {/* Main Content */}
-                <main className="w-full max-w-7xl mx-auto mt-20 sm:mt-24 z-10">
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-['Orbitron'] text-[#FFD700] mb-6">Featured Products</h1>
+                <main className="w-full max-w-7xl mx-auto mt-6 sm:mt-8 z-10">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-['Orbitron'] text-[#FFD700] mb-4">Featured Products</h1>
                     {products && products.data && products.data.length > 0 ? (
                         <>
                             {/* Product Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                                 {products.data.map((product) => (
                                     <ProductItem key={product.id} product={product} setToast={setToastMessage} setShowToast={setShowToast} />
                                 ))}
                             </div>
 
                             {/* Pagination */}
-                            <div className="flex justify-center gap-2 mt-8">
+                            <div className="flex justify-center gap-2 mt-6 sm:mt-8">
                                 <Button
                                     onClick={() => handlePageChange(products.prev_page_url)}
                                     disabled={!products.prev_page_url}
-                                    className="px-4 py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700] disabled:opacity-50"
+                                    className="px-3 sm:px-4 py-1 sm:py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700] disabled:opacity-50"
                                 >
                                     Previous
                                 </Button>
-                                <span className="px-4 py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter']">
+                                <span className="px-3 sm:px-4 py-1 sm:py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter']">
                                     Page {products.current_page} of {products.last_page}
                                 </span>
                                 <Button
                                     onClick={() => handlePageChange(products.next_page_url)}
                                     disabled={!products.next_page_url}
-                                    className="px-4 py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700] disabled:opacity-50"
+                                    className="px-3 sm:px-4 py-1 sm:py-2 bg-[#25253A] text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700] disabled:opacity-50"
                                 >
                                     Next
                                 </Button>
@@ -195,8 +194,8 @@ export default function Welcome() {
 
                 {/* Fancy Toast Notification */}
                 {showToast && (
-                    <div className="fixed bottom-5 right-5 z-50 animate-slide-in-out">
-                        <div className="bg-[#25253A] border border-[#00D4FF] text-[#E5E7EB] px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 transform transition-all duration-300 hover:shadow-2xl hover:scale-105">
+                    <div className="fixed bottom-5 right-5 z-40 animate-slide-in-out">
+                        <div className="bg-[#25253A] border border-[#00D4FF] text-[#E5E7EB] px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg flex items-center space-x-2 sm:space-x-3 transform transition-all duration-300 hover:shadow-2xl hover:scale-105">
                             <span className="text-sm font-['Inter']">{toastMessage}</span>
                             <span className="text-[#00D4FF] animate-pulse">●</span>
                         </div>
