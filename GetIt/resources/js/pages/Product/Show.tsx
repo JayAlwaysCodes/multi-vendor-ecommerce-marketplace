@@ -10,14 +10,14 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import MiniCartDropdown from '@/components/MiniCartDropdown';
 
 export default function Show() {
-    const props = usePage<SharedData & { product: { product: Product }; variationOptions: number[]; cartTotal?: number; cartTotalPrice?: number }>().props;
+    const props = usePage<SharedData & { product: { product: Product }; variationOptions: Record<number, number>; cartTotal?: number; cartTotalPrice?: number }>().props;
     console.log('All props received in Show:', props);
 
     // Extract the inner product from the wrapped object with fallback
     const productData = props.product?.product || null;
     console.log('Extracted productData:', productData);
 
-    const { variationOptions = [], auth, cartTotal = 0, cartTotalPrice = 0 } = props || {};
+    const { variationOptions = {}, auth, cartTotal = 0, cartTotalPrice = 0 } = props || {};
     console.log('Variation options:', variationOptions, 'Auth:', auth, 'Cart Total:', cartTotal, 'Cart Total Price:', cartTotalPrice);
 
     // Log product and variationOptions for debugging
@@ -41,7 +41,7 @@ export default function Show() {
     const [selectedOptions, setSelectedOptions] = useState<Record<number, VariationTypeOption>>({});
     const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-    const [isCartDropdownVisible, setIsCartDropdownVisible] = useState(false); // Changed to hover
+    const [isCartDropdownVisible, setIsCartDropdownVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
 
@@ -119,12 +119,6 @@ export default function Show() {
         hasInitializedOptions.current = true;
     }, [productData, variationOptions]);
 
-    const getOptionIdsMap = (newOptions: object) => {
-        return Object.fromEntries(
-            Object.entries(newOptions).map(([a, b]) => [a, (b as VariationTypeOption).id])
-        );
-    };
-
     const chooseOption = (
         typeId: number,
         option: VariationTypeOption,
@@ -138,9 +132,13 @@ export default function Show() {
             };
 
             if (updateRouter) {
-                const optionsMap = getOptionIdsMap(newOptions);
                 const queryParams = new URLSearchParams(window.location.search);
-                queryParams.set('options', JSON.stringify(optionsMap));
+                // Remove any existing 'options' params
+                queryParams.delete('options');
+                // Add new options in the format options[typeId]=optionId
+                Object.entries(newOptions).forEach(([tId, opt]) => {
+                    queryParams.set(`options[${tId}]`, opt.id.toString());
+                });
                 const newUrl = `${url.split('?')[0]}?${queryParams.toString()}`;
 
                 window.history.pushState({}, '', newUrl);
@@ -150,7 +148,7 @@ export default function Show() {
                     preserveState: true,
                     replace: true,
                     onSuccess: () => {
-                        console.log('URL updated with new options:', optionsMap);
+                        console.log('URL updated with new options:', queryParams.toString());
                     },
                 });
             }
@@ -202,7 +200,7 @@ export default function Show() {
 
             return (
                 <div key={type.id}>
-                    <b>{type.name || 'Unnamed Type'}</b>
+                    <b className="text-[#FFD700] font-['Orbitron']">{type.name || 'Unnamed Type'}</b>
                     {type.type.toLowerCase() === 'image' && (
                         <div className="flex gap-2 mb-4">
                             {type.options.map(option => (
@@ -211,11 +209,11 @@ export default function Show() {
                                         <img
                                             src={option.images[0]?.thumb || '/placeholder-image.png'}
                                             alt={option.name || 'Option Image'}
-                                            className={`w-[50px] ${selectedOptions[type.id]?.id === option.id ? 'outline outline-4 outline-[#00D4FF]' : ''}`}
+                                            className={`w-[50px] h-[50px] rounded cursor-pointer hover:opacity-80 transition-opacity duration-300 ${selectedOptions[type.id]?.id === option.id ? 'outline outline-4 outline-[#00D4FF]' : ''}`}
                                         />
                                     ) : (
                                         <div
-                                            className={`w-[50px] h-[50px] bg-[#25253A] flex items-center justify-center text-[#E5E7EB] text-sm ${selectedOptions[type.id]?.id === option.id ? 'outline outline-4 outline-[#00D4FF]' : ''}`}
+                                            className={`w-[50px] h-[50px] bg-[#25253A] flex items-center justify-center text-[#E5E7EB] text-sm rounded cursor-pointer hover:opacity-80 transition-opacity duration-300 ${selectedOptions[type.id]?.id === option.id ? 'outline outline-4 outline-[#00D4FF]' : ''}`}
                                         >
                                             {option.name || 'No Name'}
                                         </div>
@@ -230,7 +228,11 @@ export default function Show() {
                                 <button
                                     onClick={() => chooseOption(type.id, option)}
                                     key={option.id}
-                                    className={`btn ${selectedOptions[type.id]?.id === option.id ? 'bg-[#00D4FF] text-[#1A1A2E]' : 'bg-[#25253A] text-[#E5E7EB]'} border-[#00D4FF] hover:bg-[#FFD700]/20 hover:text-[#FFD700] transition-all duration-300`}
+                                    className={`inline-flex items-center rounded-sm border border-[#00D4FF] px-3 py-1 text-sm font-['Inter'] transition-all duration-300 ${
+                                        selectedOptions[type.id]?.id === option.id
+                                            ? 'bg-[#00D4FF] text-[#1A1A2E]'
+                                            : 'bg-[#25253A] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700]'
+                                    }`}
                                 >
                                     {option.name || 'No Name'}
                                 </button>
@@ -250,7 +252,7 @@ export default function Show() {
                 <select
                     value={form.data.quantity}
                     onChange={onQuantityChange}
-                    className="select select-bordered w-full bg-[#25253A] text-[#E5E7EB] border-[#00D4FF] max-w-xs"
+                    className="bg-[#2A2A40] border border-[#00D4FF]/50 text-[#E5E7EB] rounded-sm font-['Inter'] text-sm focus:ring-2 focus:ring-[#00D4FF] focus:border-[#00D4FF] transition-all duration-300 outline-none max-w-xs"
                 >
                     {Array.from({ length: availableQuantity }).map((_, i) => (
                         <option value={i + 1} key={i + 1}>Quantity: {i + 1}</option>
@@ -258,7 +260,7 @@ export default function Show() {
                 </select>
                 <button
                     onClick={addToCart}
-                    className="btn bg-[#00D4FF] text-[#1A1A2E] font-['Inter'] hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300"
+                    className="inline-flex items-center rounded-sm bg-[#00D4FF] text-[#1A1A2E] font-['Inter'] px-4 py-2 text-sm hover:bg-[#FFD700] hover:text-[#1A1A2E] transition-all duration-300"
                     disabled={!productData?.id}
                 >
                     Add to Cart
@@ -403,7 +405,7 @@ export default function Show() {
                                         <div
                                             key={image.id}
                                             onClick={() => setSelectedImage(image)}
-                                            className={`w-16 sm:w-24 h-16 sm:h-24 bg-[#25253A] rounded-md flex items-center justify-center cursor-pointer ${
+                                            className={`w-16 sm:w-24 h-16 sm:h-24 bg-[#25253A] rounded-md flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity duration-300 ${
                                                 selectedImage?.id === image.id ? 'outline outline-4 outline-[#00D4FF]' : ''
                                             }`}
                                         >
@@ -427,18 +429,18 @@ export default function Show() {
                             {productData.variationTypes && productData.variationTypes.length > 0 && renderProductVariationTypes()}
 
                             {computedProduct.quantity !== undefined && computedProduct.quantity < 10 && computedProduct.quantity > 0 && (
-                                <div className="text-red-500 my-2">
+                                <div className="text-[#FF5555] my-2 font-['Inter']">
                                     <span>Only {computedProduct.quantity} left</span>
                                 </div>
                             )}
                             {computedProduct.quantity > 0 ? renderAddToCartButton() : (
-                                <div className="text-red-500 my-2">
+                                <div className="text-[#FF5555] my-2 font-['Inter']">
                                     <span>Out of stock</span>
                                 </div>
                             )}
 
                             <b className="text-lg sm:text-xl text-[#FFD700] font-['Orbitron'] mt-4">About the Item</b>
-                            <div className="wysiwyg-output text-[#E5E7EB] mt-2" dangerouslySetInnerHTML={{ __html: productData.description || 'No description available.' }} />
+                            <div className="wysiwyg-output text-[#E5E7EB] mt-2 font-['Inter']" dangerouslySetInnerHTML={{ __html: productData.description || 'No description available.' }} />
                         </div>
                     </div>
                 </main>

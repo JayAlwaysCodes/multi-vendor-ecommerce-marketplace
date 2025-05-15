@@ -49,7 +49,7 @@ function CartItem({ item }: { item: CartItemType }) {
                     <img
                         src={item.image || '/placeholder-image.png'}
                         alt={item.title}
-                        className="max-w-full max-h-full object-cover rounded"
+                        className="max-w-full max-h-full object-cover rounded hover:opacity-80 transition-opacity duration-300"
                     />
                 </Link>
                 <div className="flex-1 flex flex-col">

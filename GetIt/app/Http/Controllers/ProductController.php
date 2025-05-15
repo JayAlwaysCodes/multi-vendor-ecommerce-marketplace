@@ -65,7 +65,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product, Request $request)
     {
         $product->load([
             'user',
@@ -84,10 +84,35 @@ class ProductController extends Controller
             'product_resource' => $productResource->toArray(request()),
         ]);
 
-        $variationOptions = request()->input('options', []);
-        if (!is_array($variationOptions)) {
-            $variationOptions = [];
+        // Handle 'options' query parameter
+        $rawOptions = $request->input('options', []);
+        $variationOptions = [];
+
+        if (is_string($rawOptions)) {
+            // If options is a JSON string (e.g., '{"1":2,"3":4}'), decode it
+            $decodedOptions = json_decode($rawOptions, true);
+            if (is_array($decodedOptions)) {
+                $variationOptions = $decodedOptions;
+            }
+        } elseif (is_array($rawOptions)) {
+            // If options is already an array (e.g., from `options[1]=2` query params)
+            $variationOptions = $rawOptions;
         }
+
+        // Convert keys to integers for consistency with frontend expectations
+        $variationOptions = array_reduce(
+            array_keys($variationOptions),
+            function ($carry, $key) use ($variationOptions) {
+                $carry[(int)$key] = (int)$variationOptions[$key];
+                return $carry;
+            },
+            []
+        );
+
+        Log::info('Parsed variationOptions', [
+            'rawOptions' => $rawOptions,
+            'variationOptions' => $variationOptions,
+        ]);
 
         $cartService = app(CartService::class);
         return Inertia::render('Product/Show', [

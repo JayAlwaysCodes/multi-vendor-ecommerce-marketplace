@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import { ShoppingCart } from 'lucide-react';
 import CurrencyFormatter from '@/components/CurrencyFormatter';
@@ -14,6 +14,30 @@ function MiniCartDropdown({ isVisible, onMouseEnter, onMouseLeave }: MiniCartDro
     const { cartTotal = 0, cartTotalPrice = 0, miniCartItems = [] } = usePage<
         SharedData & { cartTotal?: number; cartTotalPrice?: number; miniCartItems?: CartItem[] }
     >().props;
+
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
+    const handleMouseEnter = () => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        onMouseEnter();
+    };
+
+    const handleMouseLeave = () => {
+        timeoutRef.current = setTimeout(() => {
+            onMouseLeave();
+        }, 300); // 300ms delay
+    };
 
     const handleClearCart = () => {
         router.post(route('cart.clear'), {}, {
@@ -31,8 +55,8 @@ function MiniCartDropdown({ isVisible, onMouseEnter, onMouseLeave }: MiniCartDro
     return (
         <div
             className="relative"
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             {/* Cart Icon with Badge */}
             <button className="relative inline-block rounded-sm border border-[#00D4FF] px-3 sm:px-4 py-1.5 text-sm font-['Inter'] text-[#E5E7EB] hover:bg-[#FFD700]/20 hover:text-[#FFD700] hover:shadow-[0_0_10px_#FFD700] transition-all duration-300">
