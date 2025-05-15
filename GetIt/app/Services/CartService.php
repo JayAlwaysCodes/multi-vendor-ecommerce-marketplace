@@ -261,8 +261,8 @@ class CartService
          ->map(fn ($items, $userId)=> [
             'user' => $items->first()['user'],
             'items' => $items->toArray(),
-            'total_quantity' => $items->sum('quantity'),
-            'total_price' => $items->sum(fn ($item) => $item['price'] * $item['quantity']),
+            'totalQuantity' => $items->sum('quantity'),
+            'totalPrice' => $items->sum(fn ($item) => $item['price'] * $item['quantity']),
          ])
          ->toArray();
    }

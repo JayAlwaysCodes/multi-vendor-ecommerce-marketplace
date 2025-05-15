@@ -24,6 +24,7 @@ export interface NavItem {
 
 export interface SharedData {
     name: string;
+    csrf_token: string;
     quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
@@ -109,6 +110,13 @@ export type CartItem = {
     image: string;
     option_ids: Record<string, number>;
     options: VariationTypeOption[];
+}
+
+export type GroupedCartItem = {
+    user: User;
+    items: CartItem[];
+    totalPrice: number;
+    totalQuantity: number;
 }
 
 export type PaginationProps<T> = {
