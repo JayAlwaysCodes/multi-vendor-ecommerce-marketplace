@@ -22,6 +22,9 @@ Route::controller(CartController::class)->group(function (){
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard',[ProductController::class, 'welcome'])->name('dashboard');
+
+    Route::post('/cart/checkout', [CartController::class, 'checkout'])
+        ->name('cart.checkout');
 });
 
 require __DIR__.'/settings.php';

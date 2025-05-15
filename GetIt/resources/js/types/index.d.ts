@@ -32,7 +32,7 @@ export interface SharedData {
     [key: string]: unknown;
     totalQuantity: number;
     totalPrice: number;
-    cartItems: CartItem[];
+    miniCartItems: CartItem[];
 }
 
 export interface User {

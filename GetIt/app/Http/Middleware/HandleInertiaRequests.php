@@ -59,7 +59,7 @@ class HandleInertiaRequests extends Middleware
             'success' => session('success'),
             'totalQuantity' => $totalQuantity,
             'totalPrice' => $totalPrice,
-            'cartItems' => $cartItems,
+            'miniCartItems' => $cartItems,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

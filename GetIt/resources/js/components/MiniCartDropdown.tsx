@@ -11,8 +11,8 @@ interface MiniCartDropdownProps {
 }
 
 function MiniCartDropdown({ isVisible, onMouseEnter, onMouseLeave }: MiniCartDropdownProps) {
-    const { cartTotal = 0, cartTotalPrice = 0, cartItems = [] } = usePage<
-        SharedData & { cartTotal?: number; cartTotalPrice?: number; cartItems?: CartItem[] }
+    const { cartTotal = 0, cartTotalPrice = 0, miniCartItems = [] } = usePage<
+        SharedData & { cartTotal?: number; cartTotalPrice?: number; miniCartItems?: CartItem[] }
     >().props;
 
     const handleClearCart = () => {
@@ -53,12 +53,12 @@ function MiniCartDropdown({ isVisible, onMouseEnter, onMouseLeave }: MiniCartDro
                         </div>
                     </div>
                     <div className="my-2 sm:my-4 max-h-[200px] sm:max-h-[300px] overflow-auto">
-                        {cartItems.length === 0 ? (
+                        {miniCartItems.length === 0 ? (
                             <div className="px-4 py-2 text-sm text-[#E5E7EB] font-['Inter']">
                                 Your cart is empty.
                             </div>
                         ) : (
-                            cartItems.map((item) => (
+                            miniCartItems.map((item) => (
                                 <div key={item.id} className="flex gap-2 sm:gap-4 p-2 sm:p-3 border-b border-[#00D4FF]/10">
                                     <Link href={route('product.show', item.slug)}>
                                         <img

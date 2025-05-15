@@ -79,4 +79,9 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Cart cleared successfully!');
     }
+
+    public function checkout()
+    {
+        
+    }
 }
