@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Services\CartService;
+use Inertia\Inertia;
 
 class CartController extends Controller
 {
@@ -82,6 +83,6 @@ class CartController extends Controller
 
     public function checkout()
     {
-        
+
     }
 }
