@@ -13,7 +13,9 @@ class CartController extends Controller
      */
     public function index(CartService $cartService)
     {
-        dd($cartService);
+        return Inertia::render('Cart/Index', [
+            'cartItems' => $cartService->getCartItemsGrouped(),
+        ]);
     }
    
     /**
