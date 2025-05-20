@@ -84,7 +84,7 @@ function MiniCartDropdown({ isVisible, onMouseEnter, onMouseLeave }: MiniCartDro
                         ) : (
                             miniCartItems.map((item) => (
                                 <div key={item.id} className="flex gap-2 sm:gap-4 p-2 sm:p-3 border-b border-[#00D4FF]/10">
-                                    <Link href={route('product.show', item.slug)}>
+                                    <Link href={productRoute(item)}>
                                         <img
                                             src={item.image || '/placeholder-image.png'}
                                             alt={item.title}
@@ -93,7 +93,7 @@ function MiniCartDropdown({ isVisible, onMouseEnter, onMouseLeave }: MiniCartDro
                                     </Link>
                                     <div className="flex-1">
                                         <h4 className="mb-1 sm:mb-3 text-sm font-semibold text-[#E5E7EB] font-['Inter'] truncate">
-                                            <Link href={route('product.show', item.slug)}>
+                                            <Link href={productRoute(item)}>
                                                 {item.title}
                                             </Link>
                                         </h4>
