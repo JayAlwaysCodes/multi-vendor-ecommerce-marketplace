@@ -266,4 +266,15 @@ class CartService
          ])
          ->toArray();
    }
+
+   public function moveCartItemsToDatabase($userId): void
+   {
+      // get the cart items from cookie
+      $cartItems = $this->getCartItemsFromCookies();
+
+      //loop through the cart items and insert the, into the database
+      foreach ($cartItems as $itemKey => $cartItem){
+         
+      }
+   }
 }

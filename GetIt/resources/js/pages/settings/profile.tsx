@@ -55,7 +55,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <Input
                                 id="name"
                                 className="mt-1 block w-full bg-[#1A1A2E] text-[#E5E7EB] border-[#00D4FF] focus:ring-[#00D4FF] placeholder-[#A1A09A]"
-                                value={data斯基名}
+                                value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"

@@ -99,17 +99,17 @@ export default function Dashboard() {
                             {isProfileDropdownOpen && (
                                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-[#2A2A40] shadow-[0_0_10px_#00D4FF] border border-[#00D4FF] z-30">
                                     <Link
-                                        href="/profile"
+                                        href="/settings/profile"
                                         className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
                                     >
                                         Profile
                                     </Link>
-                                    <Link
+                                    {/* <Link
                                         href="/settings/profile"
                                         className="block px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
                                     >
                                         Settings
-                                    </Link>
+                                    </Link> */}
                                     <button
                                         onClick={handleLogout}
                                         className="block w-full text-left px-4 py-2 text-sm text-[#E5E7EB] font-['Inter'] hover:bg-[#FFD700]/20 hover:text-[#FFD700]"
