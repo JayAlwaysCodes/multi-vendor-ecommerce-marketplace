@@ -274,7 +274,30 @@ class CartService
 
       //loop through the cart items and insert the, into the database
       foreach ($cartItems as $itemKey => $cartItem){
-         
+         // check if the cart item already exists for the user
+         $existingItem = CartItem::where('user_id', $userId)
+            ->where('product_id', $cartItem['product_id'])
+            ->where('variation_type_option_ids', json_encode($cartItem['option_ids']))
+            ->first(); 
+
+         if ($existingItem){
+            //if the item exists, update the quantity
+            $existingItem->update([
+               'quantity' => DB::raw('quantity + ' . $cartItem['quantity']),
+               'price' => $cartItem['price'],
+            ]);
+         }else{
+            //if the item doesn't exist, create a new item
+            CartItem::create([
+               'user_id' => $userId,
+               'product_id' => $cartItem['product_id'],
+               'quantity' => $cartItem['quantity'],
+               'price' => $cartItem['price'],
+               'variation_type_option_ids' => $cartItem['option_ids'],
+            ]);
+         }
       }
+      //after moving the items to the database, clear the cookie
+      Cookie::queue(self::COOKIE_NAME, '', -1);
    }
 }
