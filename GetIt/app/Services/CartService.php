@@ -244,7 +244,7 @@ class CartService
          })->toArray();
 
       return $cartItems;
-   }
+   } 
 
    protected function getCartItemsFromCookies()
    {
